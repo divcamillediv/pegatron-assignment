@@ -1,0 +1,53 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment Variables
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.DS_Store
+
+# Build files
+dist/
+build/
+
+# Logs
+logs/
+*.log
+log/
+
+# Editor and System Files
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+
+# Binaries
+*.exe
+*.out
+*.app
+
+# MacOS & Linux Files
+.DS_Store
+*.pid
+*.seed
+*.pid.lock
+
+# TypeScript & Babel
+*.tsbuildinfo
+.cache/
+.next/
+.nuxt/
+
+# MongoDB Data (if using local MongoDB)
+dump/
+data/
