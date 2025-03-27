@@ -1,13 +1,25 @@
 import { FaSearch } from "react-icons/fa"
 import { FaUserPlus } from "react-icons/fa"
+import UserForm from "./UserForm"; 
+import { useContext} from "react";
+import { FormVisibilityContext } from "../contexts/FormVisibilityContextProvider";
 
 const AddUserButton = () => {
+    const { toggleFormVisibility } = useContext(FormVisibilityContext);
+
+    const handleButtonClick = () => {
+        toggleFormVisibility();
+    };
+
     return (
-      <button className="bg-amber-500 text-white p-2 rounded-md w-1/8 flex items-center justify-center">
-        <FaUserPlus className="w-6 h-6" />
-      </button>
-    )
-  }
+        <button 
+          className="bg-amber-500 text-white p-2 rounded-md w-1/8 h-10 flex items-center justify-center" 
+          onClick={handleButtonClick}
+        >
+          <FaUserPlus className="w-6 h-6" />
+        </button>
+    );
+};
 
 const SearchBar = () => {
   return (
@@ -26,9 +38,12 @@ const SearchBar = () => {
 
 const ToolBar = () => {
   return (
-    <div className="flex gap-2">
-      <AddUserButton />
-      <SearchBar />
+    <div className="flex flex-col gap-2"> 
+      <div className="flex gap-2 items-center">
+        <AddUserButton />
+        <SearchBar />
+      </div>
+      <UserForm />
     </div>
   )
 }
