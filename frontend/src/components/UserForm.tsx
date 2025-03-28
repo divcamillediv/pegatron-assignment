@@ -1,9 +1,23 @@
 import { useState } from "react";
-import { insertUser } from "../models/user"; // Assuming insertUser is exported from user.ts
 import { FaTimes } from "react-icons/fa"; // Importing the cross icon
-import { ProfilePic } from "./UserBox";
 import { useContext } from "react";
 import { FormVisibilityContext } from "../contexts/FormVisibilityContextProvider";
+import defaultPfp from "../assets/default_pfp.jpeg"
+import { UserContext } from "../contexts/UserContextProvider"; // Import UserContext
+import { Occupation, Gender } from "../types/types";
+
+/*
+{users.map((user, index) => (
+        <UserBox
+          key={index}
+          name={user.name}
+          gender={user.gender}
+          birthday={user.birthday}
+          occupation={user.occupation}
+          phoneNumber={user.phoneNumber}
+        />
+      ))}
+*/
 
 export const CloseButton = () => {
   const { toggleFormVisibility } = useContext(FormVisibilityContext);
@@ -15,13 +29,21 @@ export const CloseButton = () => {
   );
 };
 
+// ProfilePic displays a user's profile picture when the display is grid.
+const ProfilePic = () => {
+  return (
+    <img src={defaultPfp} alt="Profile" className="w-sm h-sm rounded-md" />
+  )
+}
+
 const UserForm = () => {
+  const { setUser } = useContext(UserContext); // Get setUser from context
   //form fields
   const [name, setName] = useState("");
-  const [gender, setGender] = useState("other");
-  const [birthday, setBirthday] = useState("");
-  const [occupation, setOccupation] = useState("unemployed");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [gender, setGender] = useState<Gender>("Other");
+  const [birthday, setBirthday] = useState(new Date().getTime());
+  const [occupation, setOccupation] = useState<Occupation>("Unemployed");
+  const [phoneNumber, setPhoneNumber] = useState(0);
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -34,14 +56,15 @@ const UserForm = () => {
       phoneNumber,
       profilePic: profilePicture,
     };
-    insertUser({ userList: { autoIncrement: 0, users: [] }, setUserList: () => {} });
+
+    setUser(newUser); // Update user state with the new user data
 
     // Reset form fields
     setName("");
-    setGender("other");
-    setBirthday("");
-    setOccupation("unemployed");
-    setPhoneNumber("");
+    setGender("Other");
+    setBirthday(new Date().getTime());
+    setOccupation("Unemployed");
+    setPhoneNumber(0);
     setProfilePicture(null);
   };
 
@@ -84,7 +107,7 @@ const UserForm = () => {
                   setProfilePicture(files[0]);
                 }
               }}
-              className="flex hidden"
+              className="hidden"
             />
           </label>
         </div>
@@ -103,7 +126,7 @@ const UserForm = () => {
           <label className={labelClass} htmlFor="gender">Gender:</label>
           <select
             value={gender}
-            onChange={(e) => setGender(e.target.value)}
+            onChange={(e) => setGender(e.target.value as Gender)}
             id="gender"
             className={inputClass}
           >
@@ -116,14 +139,14 @@ const UserForm = () => {
           <input
             type="date"
             value={birthday}
-            onChange={(e) => setBirthday(e.target.value)}
+            onChange={(e) => setBirthday(new Date(e.target.value).getTime())}
             className={inputClass}
           />
 
           <label className={labelClass} htmlFor="occupation">Occupation:</label>
           <select
             value={occupation}
-            onChange={(e) => setOccupation(e.target.value)}
+            onChange={(e) => setOccupation(e.target.value as Occupation)}
             id="occupation"
             className={inputClass}
           >
@@ -137,7 +160,7 @@ const UserForm = () => {
           <input
             type="text"
             value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            onChange={(e) => setPhoneNumber(parseInt(e.target.value))}
             placeholder="Phone Number"
             className={inputClass}
           />
