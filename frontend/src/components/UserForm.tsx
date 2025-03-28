@@ -52,41 +52,42 @@ const UserForm = () => {
   return (
     isFormVisible ? (
       <div id="big-box" className="bg-amber-500 flex-col flex p-2 rounded-lg">
-        <CloseButton />
-        <div id="form-box">
-          <form onSubmit={handleSubmit} className="gap-2 items-center pr-8 pt-2 justify-items-end">
-          {/* Profile Picture Upload */}
-          <div className="flex flex-col items-center">
-            <div id="profile-picture" className="w-48 h-48 bg-slate-100 rounded-xl">
-            {imageUploaded ? (
-              <img
-                alt="not found"
-                width={"250px"}
-                src={URL.createObjectURL(profilePicture)}
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <ProfilePic />
-              </div>
-            )}
-            <label className="bg-slate-100 text-amber-500 p-2 rounded-md w-full flex items-center justify-center">
-              <input
-                    type="file"
-                    name="myImage"
-                    onChange={(event) => {
-                      const files = event.target.files;
-                      if (files !== null && files && files.length > 0) {
-                        setProfilePicture(files[0]);
-                      }
-                    }} 
-                    style={{ display: 'none' }} // Hide the input but keep it functional
-              />
-              <span>Upload</span>
-            </label>
+        <CloseButton />       
+        <form id="form-box" onSubmit={handleSubmit}>
+        {/* Profile Picture Upload */}
+        <div id="pfp-box" className="bg-blue-600 mb-4 flex">
+            <div id="profile-picture" className="bg-purple-700 w-16 h-16">
+                {imageUploaded ? (
+                  <img
+                    alt="not found"
+                    width={"250px"}
+                    height={"250px"}
+                    src={URL.createObjectURL(profilePicture)}
+                  />
+                ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <ProfilePic />
+                </div>
+              )}
+              <label className=" mt-4 p-2 rounded-md w-full flex items-center justify-center">
+                <input
+                      type="file"
+                      name="profilePic"
+                      onChange={(event) => {
+                        const files = event.target.files;
+                        if (files !== null && files && files.length > 0) {
+                          setProfilePicture(files[0]);
+                        }
+                      }} 
+                      className="flex" // Hide the input but keep it functional
+                />
+                <span>Upload</span>
+              </label>
             </div>
           </div>
 
-          {/* Right Column: Form Inputs */}
+          <div id="not-pfp" className="bg-red-600 mt-2">
+            {/* Right Column: Form Inputs */}
             <label className={labelClass} htmlFor="name">Name:</label>
             <input
               type="text"
@@ -137,13 +138,13 @@ const UserForm = () => {
               placeholder="Phone Number"
               className={inputClass}
             />
-            <div/>
-            <button type="submit" className="bg-slate-100 text-amber-500 p-2 rounded-md w-full flex items-center justify-center">
-              Add User
-            </button>
+
+              <button type="submit" className="bg-slate-100 text-amber-500 p-2 rounded-md w-full flex items-center justify-center">
+                Add User
+              </button>
+            </div>
           </form>
         </div>
-      </div>
     ) : null
   );
 };

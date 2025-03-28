@@ -12,15 +12,12 @@ const Layout = () => {
     <PaginationContextProvider>
       <FormVisibilityProvider>
         <DisplayContextProvider>
-        <div className="grid flex-col h-screen p-4">
-          <div className="w-3/4 mx-auto flex flex-col gap-2 flex-1">
+          <div className="max-h-max max-w-3/4 mx-auto mt-4 flex flex-col gap-2">
             <TabBar/>
             <ToolBar/>
-            <UserForm/>
             <Display/>
             <Footer/>
           </div>
-        </div>
         </DisplayContextProvider>
       </FormVisibilityProvider>
     </PaginationContextProvider>
