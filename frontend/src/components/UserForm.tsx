@@ -21,7 +21,7 @@ const UserForm = () => {
   const [birthday, setBirthday] = useState("");
   const [occupation, setOccupation] = useState("unemployed");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [profilePicture, setProfilePicture] = useState("");
+  const [profilePicture, setProfilePicture] = useState<File | null>(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,28 +41,52 @@ const UserForm = () => {
     setBirthday("");
     setOccupation("unemployed");
     setPhoneNumber("");
-    setProfilePicture("");
+    setProfilePicture(null);
   };
 
   const inputClass = "bg-slate-100 text-amber-500 p-2 rounded-md w-full";
   const labelClass = "text-slate-100 font-bold";
   const { isFormVisible } = useContext(FormVisibilityContext);
+  const imageUploaded = profilePicture !== null;
 
   return (
     isFormVisible ? (
-      <div id="big-box" className="bg-amber-500 p-2 rounded-lg">
+      <div id="big-box" className="bg-amber-500 flex-col flex p-2 rounded-lg">
         <CloseButton />
-        <div id="form-box" className="grid grid-cols-2 gap-4">
-          {/* Left Column: Profile Picture Upload */}
+        <div id="form-box">
+          <form onSubmit={handleSubmit} className="gap-2 items-center pr-8 pt-2 justify-items-end">
+          {/* Profile Picture Upload */}
           <div className="flex flex-col items-center">
             <div id="profile-picture" className="w-48 h-48 bg-slate-100 rounded-xl">
-              <ProfilePic />
+            {imageUploaded ? (
+              <img
+                alt="not found"
+                width={"250px"}
+                src={URL.createObjectURL(profilePicture)}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <ProfilePic />
+              </div>
+            )}
+            <label className="bg-slate-100 text-amber-500 p-2 rounded-md w-full flex items-center justify-center">
+              <input
+                    type="file"
+                    name="myImage"
+                    onChange={(event) => {
+                      const files = event.target.files;
+                      if (files !== null && files && files.length > 0) {
+                        setProfilePicture(files[0]);
+                      }
+                    }} 
+                    style={{ display: 'none' }} // Hide the input but keep it functional
+              />
+              <span>Upload</span>
+            </label>
             </div>
-            <button className="mt-2 px-4 py-1 bg-blue-500 text-white rounded">Upload</button>
           </div>
 
           {/* Right Column: Form Inputs */}
-          <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-2 items-center pr-8 pt-2 justify-items-end">
             <label className={labelClass} htmlFor="name">Name:</label>
             <input
               type="text"

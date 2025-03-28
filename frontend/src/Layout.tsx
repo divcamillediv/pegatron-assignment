@@ -5,6 +5,7 @@ import TabBar from "./components/TabBar"
 import DisplayContextProvider from "./contexts/DisplayContextProvider"
 import { PaginationContextProvider } from "./contexts/PaginationContextProvider"
 import FormVisibilityProvider from "./contexts/FormVisibilityContextProvider"
+import UserForm from "./components/UserForm"
 
 const Layout = () => {
   return (
@@ -15,6 +16,7 @@ const Layout = () => {
           <div className="w-3/4 mx-auto flex flex-col gap-2 flex-1">
             <TabBar/>
             <ToolBar/>
+            <UserForm/>
             <Display/>
             <Footer/>
           </div>

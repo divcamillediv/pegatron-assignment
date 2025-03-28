@@ -22,9 +22,11 @@ const UserBoxTitle = () => {
   return (
     <div className="bg-red-600 text-white flex-col flex gap-2 p-2 rounded-lg">
       <div className="grid grid-cols-5 gap-4">
-        {infoData.map((item, index) => (
-          <span key={index} className="font-bold">{item.title}</span>
-        ))}
+        <span className="font-bold justify-center">Name</span>
+        <span className="font-bold justify-center">Gender</span>
+        <span className="font-bold justify-center">Birthday</span>
+        <span className="font-bold justify-center">Occupation</span>
+        <span className="font-bold justify-center">Phone Number</span>
       </div>
     </div>
   )
