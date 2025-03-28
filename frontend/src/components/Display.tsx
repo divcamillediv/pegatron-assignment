@@ -3,16 +3,29 @@ import { DisplayContext } from '../contexts/DisplayContextProvider';
 import { useContext } from "react";
 import UserBox, { UserBoxTitle } from "./UserBox";
 import UserForm from './UserForm';
+import { UserContext, UserState2 } from '../contexts/UserContextProvider';
+import { UserListContext } from '../contexts/UserListContextProvider';
 
 const Display = () => {
   const itemsPerPage = 6;
   const { currentPage, setTotalPages } = useContext(PaginationContext);
   const { display } = useContext(DisplayContext);
+  const { userList } = useContext(UserListContext);
 
-  // Example array of IconBoxes - in real app this would likely come from props or context
-  const iconBoxes = [
-    <UserBox />,
-  ];
+  // Fetching users from context or props to render multiple UserBoxes
+
+  // liste de users
+  const iconBoxes = userList.map((user: UserState2, index: number) => (
+    <UserBox 
+      key={index} 
+      name={user.name} 
+      gender={user.gender} 
+      birthday={user.birthday} 
+      occupation={user.occupation} 
+      phoneNumber={user.phoneNumber} 
+      profilePic={user.profilePic} 
+    />
+  ));
 
   const totalPages = Math.ceil(iconBoxes.length / itemsPerPage);
   setTotalPages(totalPages);

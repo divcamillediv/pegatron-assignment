@@ -20,7 +20,7 @@ function getUser(userList: UserListState, UserId: number): UserState {
 
   return user;
 }
-  
+/*
 function insertUser(handler: UserListHandler): UserState {
   const User : UserState = {
     id: handler.userList.autoIncrement,
@@ -61,4 +61,4 @@ function deleteUser(handler: UserListHandler, UserId: number) {
 }
 
 export type { UserState };
-export { getUser, insertUser, updateUser, deleteUser };
+export { getUser, insertUser, updateUser, deleteUser }; */

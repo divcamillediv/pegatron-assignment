@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import { Gender, Occupation } from "../types/types";
 
-interface UserState2 {
+export interface UserState2 {
     name: string;
     gender: Gender;
     birthday: number;

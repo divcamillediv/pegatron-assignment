@@ -1,5 +1,5 @@
-import { UserState } from "./user";
-
+// import { UserState } from "./user";
+/*
 interface UserListState {
     autoIncrement: number;
     users: UserState[];   
@@ -13,4 +13,4 @@ const emptyUserList = {
 // const currentUserList = loadState()
 
 export type { UserListState };
-export { /* currentUserList, */ emptyUserList };
+export { /* currentUserList,  emptyUserList }; */
