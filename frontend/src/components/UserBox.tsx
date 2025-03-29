@@ -1,7 +1,8 @@
-import defaultPfp from "../assets/default_pfp.jpeg"
 import Information, { infoData } from "./Information"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { DisplayContext } from "../contexts/DisplayContextProvider"
+import { Gender, Occupation } from "../types/types";
+import { UserContext } from "../contexts/UserContextProvider";
 
 /**
  * UserBox is the component that displays a user's information.
@@ -10,11 +11,13 @@ import { DisplayContext } from "../contexts/DisplayContextProvider"
  * @returns A UserBox component.
  */
 
-// ProfilePic displays a user's profile picture when the display is grid.
-const ProfilePic = () => {
-  return (
-    <img src={defaultPfp} alt="Profile" className="w-sm h-sm rounded-md" />
-  )
+interface UserBoxProps {
+  name: string;
+  gender: Gender;
+  birthday: number;
+  occupation: Occupation;
+  phoneNumber: number;
+  profilePic: File | null;
 }
 
 // UserBoxTitle displays the user's information when the display is list.
@@ -33,17 +36,34 @@ const UserBoxTitle = () => {
 }
 
 // UserBox is the main component that displays the user's information.
-const UserBox = () => {
+const UserBox = ({ name, gender, birthday, occupation, phoneNumber, profilePic }: UserBoxProps) => {
   const { display } = useContext(DisplayContext);
-  const isGrid = display === "grid";
+  //form fields
+  // const isGrid = display === "grid";
 
   return (  
     <div className="bg-amber-500 flex-col flex p-2 rounded-lg">
-      {isGrid && <ProfilePic/>}
-      <Information/>
+      <div>
+        <img src={profilePic?.toString()} alt="Profile" className="w-sm h-sm rounded-md" />
+      </div>
+      <div>
+        Name: <span className="font-bold">{name}</span>
+      </div>
+      <div>
+        Gender: <span className="font-bold">{gender}</span>
+      </div>
+      <div>
+        Birthday: <span className="font-bold">{birthday}</span>
+      </div>
+      <div>
+        Occupation: <span className="font-bold">{occupation}</span>
+      </div>
+      <div>
+        Phone Number: <span className="font-bold">{phoneNumber}</span>
+      </div>      
     </div>
   )
 }
 
 export default UserBox
-export { ProfilePic, UserBoxTitle }
+export { UserBoxTitle }
