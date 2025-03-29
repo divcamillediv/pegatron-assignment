@@ -50,3 +50,4 @@ Thumbs.db
 # MongoDB Data (if using local MongoDB)
 dump/
 data/
+/frontend/src/archive
