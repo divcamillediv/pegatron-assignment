@@ -15,9 +15,10 @@ const Display = () => {
   // Fetching users from context or props to render multiple UserBoxes
 
   // liste de users
-  const iconBoxes = userList.map((user: UserState2, index: number) => (
+  const iconBoxes = userList.map((user: UserState2) => (
     <UserBox 
-      key={index} 
+      key={user.id}
+      id={user.id}
       name={user.name} 
       gender={user.gender} 
       birthday={user.birthday} 

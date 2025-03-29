@@ -26,9 +26,10 @@ const ProfilePic = () => {
 const UserForm = () => {
   const { setUser } = useContext(UserContext); // Get setUser from context
   const { setUserList } = useContext(UserListContext);
+  const [id, setId] = useState(new Date().getTime());
   const [name, setName] = useState("");
   const [gender, setGender] = useState<Gender>("Other");
-  const [birthday, setBirthday] = useState(new Date().getTime());
+  const [birthday, setBirthday] = useState(new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }));
   const [occupation, setOccupation] = useState<Occupation>("Unemployed");
   const [phoneNumber, setPhoneNumber] = useState(0);
   const [profilePic, setProfilePic] = useState<File | null>(null);
@@ -36,6 +37,7 @@ const UserForm = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newUser = {
+      id: id,
       name,
       gender,
       birthday,
@@ -48,12 +50,15 @@ const UserForm = () => {
     setUserList((prevUsers: UserState2[]) => [...prevUsers, newUser]);
 
     // Reset form fields
+    setId(new Date().getTime());
     setName("");
     setGender("Other");
-    setBirthday(new Date().getTime());
+    setBirthday(new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }));
     setOccupation("Unemployed");
     setPhoneNumber(0);
     setProfilePic(null);
+
+    console.log(newUser);
   };
 
   const { isFormVisible } = useContext(FormVisibilityContext);
@@ -125,7 +130,7 @@ const UserForm = () => {
             <input
               type="date"
               value={new Date(birthday).toISOString().split("T")[0]} // Format date for input
-              onChange={(e) => setBirthday(new Date(e.target.value).getTime())}
+              onChange={(e) => setBirthday(new Date(e.target.value).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }))}
               className="bg-slate-100 text-slate-900 p-2 rounded-md w-full"
             />
 

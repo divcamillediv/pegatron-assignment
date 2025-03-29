@@ -9,6 +9,15 @@ interface UserListHandler {
 
 const emptyUserList: UserState2[] = [];
 
+export function getUser(userList: UserState2[], UserId: number): UserState2 {
+    const user = userList.find((user: UserState2) => user.id === UserId);
+    if (user === undefined) {
+        throw `No User ${UserId} found in the database.`;
+    }
+
+    return user;
+  }
+
 // const currentUserList: UserState2[] = loadState();
 
 export const UserListContext = createContext<UserListHandler>(undefined as any);

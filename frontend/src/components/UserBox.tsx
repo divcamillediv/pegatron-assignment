@@ -12,9 +12,10 @@ import { UserListContext, UserListHandler } from "../contexts/UserListContextPro
  */
 
 interface UserBoxProps {
+  id: number;
   name: string;
   gender: Gender;
-  birthday: number;
+  birthday: string;
   occupation: Occupation;
   phoneNumber: number;
   profilePic: File | null;
@@ -36,7 +37,7 @@ const UserBoxTitle = () => {
 }
 
 // UserBox is the main component that displays the user's information.
-const UserBox = ({ name, gender, birthday, occupation, phoneNumber, profilePic }: UserBoxProps) => {
+const UserBox = ({ id, name, gender, birthday, occupation, phoneNumber, profilePic }: UserBoxProps) => {
   const { display } = useContext(DisplayContext);
   const userListHandler = useContext(UserListContext);
   //form fields
@@ -44,12 +45,11 @@ const UserBox = ({ name, gender, birthday, occupation, phoneNumber, profilePic }
 
   const handleEdit = () => {}
 
-  const handleDelete = (userListHandler: UserListHandler, birthday: number): void => {
-    // Filter out the user with the matching birthday
-    const updatedUserList = userListHandler.userList.filter((user) => user.birthday !== birthday);
-
-    // Update the user list in the context
+  const handleDelete = (userListHandler: UserListHandler, id: number): void => {
+    console.log("Deleting user with ID:", id);
+    const updatedUserList = userListHandler.userList.filter((user) => user.id !== id);
     userListHandler.setUserList(updatedUserList); // Ensure this updates the state correctly
+    console.log(updatedUserList);
   }
 
   return (  
@@ -75,7 +75,7 @@ const UserBox = ({ name, gender, birthday, occupation, phoneNumber, profilePic }
        
       <div className="flex justify-between">
         <FaEdit className="text-blue-500" />
-        <FaTrash onClick={() => handleDelete(userListHandler, birthday)} className="text-red-500" />
+        <FaTrash onClick={() => handleDelete(userListHandler, id)} className="text-red-500" />
       </div>
     </div>
   )
