@@ -4,7 +4,6 @@ import { FormVisibilityContext } from "../contexts/FormVisibilityContextProvider
 import defaultPfp from "../assets/default_pfp.jpeg";
 import { UserContext, UserState2 } from "../contexts/UserContextProvider"; // Import UserContext
 import { Occupation, Gender } from "../types/types";
-import UserBox from "./UserBox"; // Import UserBox
 import { UserListContext } from "../contexts/UserListContextProvider";
 
 export const CloseButton = () => {
@@ -33,7 +32,6 @@ const UserForm = () => {
   const [occupation, setOccupation] = useState<Occupation>("Unemployed");
   const [phoneNumber, setPhoneNumber] = useState(0);
   const [profilePic, setProfilePic] = useState<File | null>(null);
-  const [userAdded, setUserAdded] = useState(false); // State to track if user is added
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -47,7 +45,6 @@ const UserForm = () => {
     };
 
     setUser(newUser); // Update user state with the new user data
-    setUserAdded(true); // Set user added to true
     setUserList((prevUsers: UserState2[]) => [...prevUsers, newUser]);
 
     // Reset form fields
@@ -61,10 +58,10 @@ const UserForm = () => {
 
   const { isFormVisible } = useContext(FormVisibilityContext);
 
-  return (
+  return isFormVisible && 
+     (
     <div id="big-box" className="bg-amber-500 flex-col flex p-2 rounded-lg">
       <CloseButton />
-      {isFormVisible && (
         <form id="form-box" onSubmit={handleSubmit}>
           {/* Profile Picture Upload */}
           <div id="pfp-box" className="justify-evenly mb-4 flex flex-row gap-2 items-center">
@@ -159,18 +156,7 @@ const UserForm = () => {
             </button>
           </div>
         </form>
-      )}
-      {/* Render UserBox only if user is added */}
-      {userAdded && (
-        <UserBox
-          name={name}
-          gender={gender}
-          birthday={birthday}
-          occupation={occupation}
-          phoneNumber={phoneNumber}
-          profilePic={profilePic}
-        />
-      )}
+      
     </div>
   );
 };
