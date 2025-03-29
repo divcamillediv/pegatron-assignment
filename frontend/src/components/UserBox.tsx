@@ -1,9 +1,9 @@
-import Information, { infoData } from "./Information"
-import { useContext, useState } from "react"
+import { FaEdit, FaTrash } from "react-icons/fa"; // Importing edit and delete icons
+
+import { useContext } from "react"
 import { DisplayContext } from "../contexts/DisplayContextProvider"
 import { Gender, Occupation } from "../types/types";
-import { UserContext } from "../contexts/UserContextProvider";
-
+import { UserListContext, UserListHandler } from "../contexts/UserListContextProvider";
 /**
  * UserBox is the component that displays a user's information.
  * It is used in the Display component.
@@ -38,8 +38,19 @@ const UserBoxTitle = () => {
 // UserBox is the main component that displays the user's information.
 const UserBox = ({ name, gender, birthday, occupation, phoneNumber, profilePic }: UserBoxProps) => {
   const { display } = useContext(DisplayContext);
+  const userListHandler = useContext(UserListContext);
   //form fields
-  // const isGrid = display === "grid";
+  const isGrid = display === "grid";
+
+  const handleEdit = () => {}
+
+  const handleDelete = (userListHandler: UserListHandler, birthday: number): void => {
+    // Filter out the user with the matching birthday
+    const updatedUserList = userListHandler.userList.filter((user) => user.birthday !== birthday);
+
+    // Update the user list in the context
+    userListHandler.setUserList(updatedUserList); // Ensure this updates the state correctly
+  }
 
   return (  
     <div className="bg-amber-500 flex-col flex p-2 rounded-lg">
@@ -60,7 +71,12 @@ const UserBox = ({ name, gender, birthday, occupation, phoneNumber, profilePic }
       </div>
       <div>
         Phone Number: <span className="font-bold">{phoneNumber}</span>
-      </div>      
+      </div>
+       
+      <div className="flex justify-between">
+        <FaEdit className="text-blue-500" />
+        <FaTrash onClick={() => handleDelete(userListHandler, birthday)} className="text-red-500" />
+      </div>
     </div>
   )
 }
