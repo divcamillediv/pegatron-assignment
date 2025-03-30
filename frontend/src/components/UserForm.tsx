@@ -1,8 +1,8 @@
-import { useState, useContext } from "react";
-import { FaTimes } from "react-icons/fa"; // Importing the cross icon
+import { useState, useContext, useEffect } from "react";
+import { FaTimes } from "react-icons/fa";
 import { FormVisibilityContext } from "../contexts/FormVisibilityContextProvider";
 import defaultPfp from "../assets/default_pfp.jpeg";
-import { UserContext, UserState2 } from "../contexts/UserContextProvider"; // Import UserContext
+import { UserContext } from "../contexts/UserContextProvider"; 
 import { Occupation, Gender } from "../types/types";
 import { UserListContext } from "../contexts/UserListContextProvider";
 
@@ -23,21 +23,42 @@ const ProfilePic = () => {
   )
 }
 
-const UserForm = () => {
-  const { setUser } = useContext(UserContext); // Get setUser from context
+const UserForm = () => {  
+  const { setUser, isBeingEdited, setIsBeingEdited } = useContext(UserContext);
   const { setUserList } = useContext(UserListContext);
-  const [id, setId] = useState(new Date().getTime());
-  const [name, setName] = useState("");
-  const [gender, setGender] = useState<Gender>("Other");
-  const [birthday, setBirthday] = useState(new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }));
-  const [occupation, setOccupation] = useState<Occupation>("Unemployed");
-  const [phoneNumber, setPhoneNumber] = useState(0);
-  const [profilePic, setProfilePic] = useState<File | null>(null);
+  const { isFormVisible, toggleFormVisibility } = useContext(FormVisibilityContext);
+  const isEditing = Boolean(isBeingEdited);
+  
+
+  const [id, setId] = useState(isEditing ? isBeingEdited?.id ?? new Date().getTime() : new Date().getTime());
+  const [name, setName] = useState(isEditing ? isBeingEdited?.name ?? "" : "");
+  const [gender, setGender] = useState(isEditing ? isBeingEdited?.gender ?? "Other" : "Other");
+  const [birthday, setBirthday] = useState(
+    isEditing
+      ? isBeingEdited?.birthday ?? new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+      : new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+  );
+  const [occupation, setOccupation] = useState(isEditing ? isBeingEdited?.occupation ?? "Unemployed" : "Unemployed");
+  const [phoneNumber, setPhoneNumber] = useState(isEditing ? isBeingEdited?.phoneNumber ?? 0 : 0);
+  const [profilePic, setProfilePic] = useState<File | null>(isEditing ? isBeingEdited?.profilePic ?? null : null);
+
+  useEffect(() => {
+    if (isBeingEdited) {
+      setId(isBeingEdited.id);
+      setName(isBeingEdited.name);
+      setGender(isBeingEdited.gender);
+      setBirthday(isBeingEdited.birthday);
+      setOccupation(isBeingEdited.occupation);
+      setPhoneNumber(isBeingEdited.phoneNumber);
+      setProfilePic(isBeingEdited.profilePic);
+    }
+  }, [isBeingEdited]);
+
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newUser = {
-      id: id,
+      id: isEditing ? id : new Date().getTime(),
       name,
       gender,
       birthday,
@@ -46,22 +67,36 @@ const UserForm = () => {
       profilePic: profilePic
     };
 
-    setUser(newUser); // Update user state with the new user data
-    setUserList((prevUsers: UserState2[]) => [...prevUsers, newUser]);
+    if (isEditing) {
+      // Update the user in the list
+      setUserList((prevUsers) =>
+        prevUsers.map((user) => (user.id === id ? newUser : user))
+      );
+      // Optionally update the current user in your context
+      setUser(newUser);
+      // Clear the editing state
+      setIsBeingEdited(null);
+    } else {
+      // Add a new user
+      setUser(newUser);
+      setUserList((prevUsers) => [...prevUsers, newUser]);
+    }
 
-    // Reset form fields
-    setId(new Date().getTime());
-    setName("");
-    setGender("Other");
-    setBirthday(new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }));
-    setOccupation("Unemployed");
-    setPhoneNumber(0);
-    setProfilePic(null);
-
+    // Reset form fields if not editing
+    if (!isEditing) {
+      setId(new Date().getTime());
+      setName("");
+      setGender("Other");
+      setBirthday(new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }));
+      setOccupation("Unemployed");
+      setPhoneNumber(0);
+      setProfilePic(null);
+    }
     console.log(newUser);
+
+    toggleFormVisibility();
   };
 
-  const { isFormVisible } = useContext(FormVisibilityContext);
 
   return isFormVisible && 
      (
@@ -156,9 +191,11 @@ const UserForm = () => {
               className="bg-slate-100 text-slate-900 p-2 rounded-md w-full"
             />
 
-            <button type="submit" className="bg-red-500 mt-4 text-slate-900 rounded-md w-full p-2">
+            {isEditing ? <button type="submit" className="bg-red-500 mt-4 text-slate-900 rounded-md w-full p-2">
+              Save Changes
+            </button> : <button type="submit" className="bg-red-500 mt-4 text-slate-900 rounded-md w-full p-2">
               Add User
-            </button>
+            </button>}
           </div>
         </form>
       

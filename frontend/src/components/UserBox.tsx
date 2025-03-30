@@ -4,6 +4,8 @@ import { useContext } from "react"
 import { DisplayContext } from "../contexts/DisplayContextProvider"
 import { Gender, Occupation } from "../types/types";
 import { UserListContext, UserListHandler } from "../contexts/UserListContextProvider";
+import { UserContext, UserState2 } from "../contexts/UserContextProvider";
+import { FormVisibilityContext } from "../contexts/FormVisibilityContextProvider";
 /**
  * UserBox is the component that displays a user's information.
  * It is used in the Display component.
@@ -39,11 +41,16 @@ const UserBoxTitle = () => {
 // UserBox is the main component that displays the user's information.
 const UserBox = ({ id, name, gender, birthday, occupation, phoneNumber, profilePic }: UserBoxProps) => {
   const { display } = useContext(DisplayContext);
+  const { toggleFormVisibility } = useContext(FormVisibilityContext);
+  const { setIsBeingEdited } = useContext(UserContext);
   const userListHandler = useContext(UserListContext);
   //form fields
   const isGrid = display === "grid";
 
-  const handleEdit = () => {}
+  const handleEdit = () => {
+    toggleFormVisibility();
+    setIsBeingEdited({ id, name, gender, birthday, occupation, phoneNumber, profilePic });
+  };
 
   const handleDelete = (userListHandler: UserListHandler, id: number): void => {
     console.log("Deleting user with ID:", id);
@@ -74,7 +81,7 @@ const UserBox = ({ id, name, gender, birthday, occupation, phoneNumber, profileP
       </div>
        
       <div className="flex justify-between">
-        <FaEdit className="text-blue-500" />
+        <FaEdit onClick={handleEdit} className="text-blue-500" />
         <FaTrash onClick={() => handleDelete(userListHandler, id)} className="text-red-500" />
       </div>
     </div>

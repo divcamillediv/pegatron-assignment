@@ -14,6 +14,8 @@ export interface UserState2 {
 interface UserHandler {
     user: UserState2;
     setUser: React.Dispatch<React.SetStateAction<UserState2>>;
+    isBeingEdited: UserState2 | null;
+    setIsBeingEdited: React.Dispatch<React.SetStateAction<UserState2 | null>>;
 }
 
 export const UserContext = createContext<UserHandler>(undefined as any);
@@ -29,8 +31,10 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
         profilePic: null,
     });
 
+    const [isBeingEdited, setIsBeingEdited] = useState<UserState2 | null>(null);
+
     return (
-        <UserContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{ user, setUser, isBeingEdited, setIsBeingEdited }}>
             {children}
         </UserContext.Provider>
     );
