@@ -23,16 +23,16 @@ interface UserBoxProps {
   profilePic: File | null;
 }
 
+const titles = ["Name", "Gender", "Birthday", "Occupation", "Phone Number"];
+
 // UserBoxTitle displays the user's information when the display is list.
 const UserBoxTitle = () => {
   return (
-    <div className="bg-red-600 text-white flex-col flex gap-2 p-2 rounded-lg">
-      <div className="grid grid-cols-5 gap-4">
-        <span className="font-bold justify-center">Name</span>
-        <span className="font-bold justify-center">Gender</span>
-        <span className="font-bold justify-center">Birthday</span>
-        <span className="font-bold justify-center">Occupation</span>
-        <span className="font-bold justify-center">Phone Number</span>
+    <div className="bg-red-600 text-white flex flex-col p-2 rounded-lg">
+      <div className="grid grid-cols-5 justify-items-start">
+        {titles.map((title) => (
+          <span key={title} className="font-bold">{title}</span>
+        ))}
       </div>
     </div>
   )
@@ -60,29 +60,30 @@ const UserBox = ({ id, name, gender, birthday, occupation, phoneNumber, profileP
   }
 
   return (  
-    <div className="bg-amber-500 flex-col flex p-2 rounded-lg">
-      <div>
-        <img src={profilePic?.toString()} alt="Profile" className="w-sm h-sm rounded-md" />
+    <div className={`bg-amber-500 flex flex-col p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105`}>
+      <div className={`mb-8 ${isGrid ? 'flex justify-center' : 'hidden'}`}>
+        <img src={profilePic?.toString()} alt="Profile" className="w-48 h-48 rounded-xl border-2 border-white shadow-md" />
       </div>
-      <div>
-        Name: <span className="font-bold">{name}</span>
+      {isGrid ? (
+        <div className="grid grid-cols-3 gap-2 justify-items-start">
+          {titles.map((title, index) => (
+            <div className="flex flex-col items-start" key={index}>
+              <span className='font-bold text-gray-800'>{title}</span>
+              <span className="font-medium text-gray-700">{[name, gender, birthday, occupation, phoneNumber][index]}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+      <div className="grid grid-cols-5 gap-2 justify-items-start">
+        { [name, gender, birthday, occupation, phoneNumber].map((value, index) => (
+          <span key={index} className="font-medium text-gray-700">{value}</span>
+        )) }
       </div>
-      <div>
-        Gender: <span className="font-bold">{gender}</span>
-      </div>
-      <div>
-        Birthday: <span className="font-bold">{birthday}</span>
-      </div>
-      <div>
-        Occupation: <span className="font-bold">{occupation}</span>
-      </div>
-      <div>
-        Phone Number: <span className="font-bold">{phoneNumber}</span>
-      </div>
-       
-      <div className="flex justify-between">
-        <FaEdit onClick={handleEdit} className="text-blue-500" />
-        <FaTrash onClick={() => handleDelete(userListHandler, id)} className="text-red-500" />
+
+      )}
+      <div className={`flex flex-row justify-between mt-2`}>
+        <FaEdit onClick={handleEdit} className="text-blue-600 w-6 h-6 hover:text-blue-800 transition-colors cursor-pointer" />
+        <FaTrash onClick={() => handleDelete(userListHandler, id)} className="text-red-600 w-6 h-6 hover:text-red-800 transition-colors cursor-pointer" />
       </div>
     </div>
   )

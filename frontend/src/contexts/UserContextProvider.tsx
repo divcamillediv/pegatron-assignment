@@ -27,7 +27,7 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
         gender: "Other",
         birthday: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
         occupation: "Unemployed",
-        phoneNumber: 0,
+        phoneNumber: 1010101010,
         profilePic: null,
     });
 
