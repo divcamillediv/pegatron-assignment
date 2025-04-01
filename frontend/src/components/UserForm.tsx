@@ -17,9 +17,48 @@ export const CloseButton = () => {
 };
 
 // ProfilePic displays a user's profile picture when the display is grid.
-const ProfilePic = () => {
+const ProfilePic = () => {  
+  const { setUser, isBeingEdited, setIsBeingEdited } = useContext(UserContext);
+  const isEditing = Boolean(isBeingEdited);
+  const [profilePic, setProfilePic] = useState<File | null>(isEditing ? isBeingEdited?.profilePic ?? null : null);
+
   return (
-    <img src={defaultPfp} alt="Profile" className="w-sm h-sm rounded-md" />
+    <>
+    {/* Profile Picture Upload */}
+    <div id="pfp-box" className="justify-evenly mb-4 flex flex-row gap-2 items-center">
+    <div id="profile-picture" className="w-32 h-32">
+      {profilePic ? (
+        <div className="flex w-32 h-32 overflow-hidden items-center justify-center rounded-md">
+          <img
+            alt="not found"
+            width={"250px"}
+            height={"250px"}
+            src={URL.createObjectURL(profilePic)}
+            className="object-cover rounded-md w-full h-full"
+          />
+        </div>
+      ) : (
+        <div className="w-full h-full flex items-center justify-center">
+          <img src={defaultPfp} alt="Profile" className="w-sm h-sm rounded-md" />
+        </div>
+      )}
+    </div>
+    <label className="bg-slate-100 mt-4 p-2 rounded-md w-1/4 flex flex-col items-center justify-center">
+      <span>Upload</span>
+      <input
+        type="file"
+        name="profilePic"
+        onChange={(event) => {
+          const files = event.target.files;
+          if (files && files.length > 0) {
+            setProfilePic(files[0]);
+          }
+        }}
+        className="hidden"
+      />
+    </label>
+  </div>
+  </>
   )
 }
 
@@ -27,7 +66,7 @@ const UserForm = () => {
   const { setUser, isBeingEdited, setIsBeingEdited } = useContext(UserContext);
   const { setUserList } = useContext(UserListContext);
   const { isFormVisible, toggleFormVisibility } = useContext(FormVisibilityContext);
-  const isEditing = Boolean(isBeingEdited);
+  let isEditing = Boolean(isBeingEdited);
   
 
   const [id, setId] = useState(isEditing ? isBeingEdited?.id ?? new Date().getTime() : new Date().getTime());
@@ -57,6 +96,7 @@ const UserForm = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(isEditing);
     const newUser = {
       id: isEditing ? id : new Date().getTime(),
       name,
@@ -76,6 +116,7 @@ const UserForm = () => {
       setUser(newUser);
       // Clear the editing state
       setIsBeingEdited(null);
+      isEditing = false;
     } else {
       // Add a new user
       setUser(newUser);
@@ -103,40 +144,7 @@ const UserForm = () => {
     <div id="big-box" className="bg-amber-500 flex-col flex p-2 rounded-lg">
       <CloseButton />
         <form id="form-box" onSubmit={handleSubmit}>
-          {/* Profile Picture Upload */}
-          <div id="pfp-box" className="justify-evenly mb-4 flex flex-row gap-2 items-center">
-            <div id="profile-picture" className="w-32 h-32">
-              {profilePic ? (
-                <div className="flex w-32 h-32 overflow-hidden items-center justify-center rounded-md">
-                  <img
-                    alt="not found"
-                    width={"250px"}
-                    height={"250px"}
-                    src={URL.createObjectURL(profilePic)}
-                    className="object-cover rounded-md w-full h-full"
-                  />
-                </div>
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <img src={defaultPfp} alt="Profile" className="w-sm h-sm rounded-md" />
-                </div>
-              )}
-            </div>
-            <label className="bg-slate-100 mt-4 p-2 rounded-md w-1/4 flex flex-col items-center justify-center">
-              <span>Upload</span>
-              <input
-                type="file"
-                name="profilePic"
-                onChange={(event) => {
-                  const files = event.target.files;
-                  if (files && files.length > 0) {
-                    setProfilePic(files[0]);
-                  }
-                }}
-                className="hidden"
-              />
-            </label>
-          </div>
+          
 
           <div id="not-pfp">            {[
               { label: "Name", type: "text", value: name, onChange: (e: { target: { value: SetStateAction<string>; }; }) => 
