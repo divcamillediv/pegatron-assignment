@@ -3,7 +3,7 @@ import { DisplayContext } from '../contexts/DisplayContextProvider';
 import { useContext } from "react";
 import UserBox, { UserBoxTitle } from "./UserBox";
 import UserForm from './UserForm';
-import { UserContext, UserState2 } from '../contexts/UserContextProvider';
+import { UserState2 } from '../contexts/UserContextProvider';
 import { UserListContext } from '../contexts/UserListContextProvider';
 
 const Display = () => {

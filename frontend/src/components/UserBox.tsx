@@ -1,11 +1,11 @@
 import { FaEdit, FaTrash } from "react-icons/fa"; // Importing edit and delete icons
-
 import { useContext } from "react"
 import { DisplayContext } from "../contexts/DisplayContextProvider"
 import { Gender, Occupation } from "../types/types";
 import { UserListContext, UserListHandler } from "../contexts/UserListContextProvider";
-import { UserContext, UserState2 } from "../contexts/UserContextProvider";
+import { UserContext } from "../contexts/UserContextProvider";
 import { FormVisibilityContext } from "../contexts/FormVisibilityContextProvider";
+import { DefaultProfilePic } from "./DefaultProfilePic";
 /**
  * UserBox is the component that displays a user's information.
  * It is used in the Display component.
@@ -19,7 +19,7 @@ interface UserBoxProps {
   gender: Gender;
   birthday: string;
   occupation: Occupation;
-  phoneNumber: number;
+  phoneNumber: string;
   profilePic: File | null;
 }
 
@@ -58,12 +58,24 @@ const UserBox = ({ id, name, gender, birthday, occupation, phoneNumber, profileP
     userListHandler.setUserList(updatedUserList); // Ensure this updates the state correctly
     console.log(updatedUserList);
   }
+  
+  console.log("profilePic of Userbox", profilePic);
+  console.log("name of Userbox", name);
+
 
   return (  
     <div className={`bg-amber-500 flex flex-col p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105`}>
       <div className={`mb-8 ${isGrid ? 'flex justify-center' : 'hidden'}`}>
-        <img src={profilePic?.toString()} alt="Profile" className="w-48 h-48 rounded-xl border-2 border-white shadow-md" />
-      </div>
+  {profilePic ? (
+    <img 
+      src={typeof profilePic === 'string' ? profilePic : URL.createObjectURL(profilePic)}
+      alt="pfp not found" 
+      className="w-48 h-48 rounded-xl border-2 border-white shadow-md" 
+    />
+  ) : (
+    <DefaultProfilePic />
+  )}
+</div>
       {isGrid ? (
         <div className="grid grid-cols-3 gap-2 justify-items-start">
           {titles.map((title, index) => (

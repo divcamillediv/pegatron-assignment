@@ -7,7 +7,7 @@ export interface UserState2 {
     gender: Gender;
     birthday: string;
     occupation: Occupation;
-    phoneNumber: number;
+    phoneNumber: string;
     profilePic: File | null;
   }
 
@@ -24,10 +24,10 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
     const [user, setUser] = useState<UserState2>({
         id: new Date().getTime(),
         name: "",
-        gender: "Other",
+        gender: "Male",
         birthday: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
-        occupation: "Unemployed",
-        phoneNumber: 1010101010,
+        occupation: "Student",
+        phoneNumber: "",
         profilePic: null,
     });
 
