@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, SetStateAction } from "react";
 import { FaTimes } from "react-icons/fa";
 import { FormVisibilityContext } from "../contexts/FormVisibilityContextProvider";
 import defaultPfp from "../assets/default_pfp.jpeg";
@@ -138,64 +138,39 @@ const UserForm = () => {
             </label>
           </div>
 
-          <div id="not-pfp">
-            {/* Form Inputs */}
-            <label className="text-slate-100 font-bold" htmlFor="name">Name:</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Name"
-              className="bg-slate-100 text-slate-900 p-2 rounded-md w-full"
-            />
+          <div id="not-pfp">            {[
+              { label: "Name", type: "text", value: name, onChange: (e: { target: { value: SetStateAction<string>; }; }) => 
+                setName(e.target.value), placeholder: "Name", id: "name" },
+              { label: "Gender", type: "select", value: gender, onChange: (e: { target: { value: string; }; }) => 
+                setGender(e.target.value as Gender), options: ["male", "female", "other"], id: "gender" },
+              { label: "Birthday", type: "date", value: new Date(birthday).toISOString().split("T")[0], onChange: (e: { target: { value: string | number | Date; }; }) => 
+                setBirthday(new Date(e.target.value).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })), id: "birthday" },
+              { label: "Occupation", type: "select", value: occupation, onChange: (e: { target: { value: string; }; }) => 
+                setOccupation(e.target.value as Occupation), options: ["student", "teacher", "engineer", "unemployed"], id: "occupation" },
+              { label: "Phone Number", type: "text", value: phoneNumber, onChange: (e: { target: { value: string; }; }) => 
+                setPhoneNumber(parseInt(e.target.value)), placeholder: "Phone Number", id: "phoneNumber" }
+            ].map(({ label, type, value, onChange, placeholder, options, id }) => (
+              <div key={id}>
+                <label className="text-slate-100 font-bold" htmlFor={id}>{label}:</label>
+                {type === "select" ? (
+                  <select value={value} onChange={onChange} id={id} className="bg-slate-100 text-slate-900 p-2 rounded-md w-full">
+                    {options?.map(option => <option key={option} value={option}>{option.charAt(0).toUpperCase() + option.slice(1)}</option>)}
+                  </select>
+                ) : (
+                  <input
+                    type={type}
+                    value={value}
+                    onChange={onChange}
+                    placeholder={placeholder}
+                    className="bg-slate-100 text-slate-900 p-2 rounded-md w-full"
+                  />
+                )}
+              </div>
+            ))}
 
-            <label className="text-slate-100 font-bold" htmlFor="gender">Gender:</label>
-            <select
-              value={gender}
-              onChange={(e) => setGender(e.target.value as Gender)}
-              id="gender"
-              className="bg-slate-100 text-slate-900 p-2 rounded-md w-full"
-            >
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
-
-            <label className="text-slate-100 font-bold" htmlFor="birthday">Birthday:</label>
-            <input
-              type="date"
-              value={new Date(birthday).toISOString().split("T")[0]} // Format date for input
-              onChange={(e) => setBirthday(new Date(e.target.value).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }))}
-              className="bg-slate-100 text-slate-900 p-2 rounded-md w-full"
-            />
-
-            <label className="text-slate-100 font-bold" htmlFor="occupation">Occupation:</label>
-            <select
-              value={occupation}
-              onChange={(e) => setOccupation(e.target.value as Occupation)}
-              id="occupation"
-              className="bg-slate-100 text-slate-900 p-2 rounded-md w-full"
-            >
-              <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
-              <option value="engineer">Engineer</option>
-              <option value="unemployed">Unemployed</option>
-            </select>
-
-            <label className="text-slate-100 font-bold" htmlFor="phoneNumber">Phone Number:</label>
-            <input
-              type="text"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(parseInt(e.target.value))}
-              placeholder="Phone Number"
-              className="bg-slate-100 text-slate-900 p-2 rounded-md w-full"
-            />
-
-            {isEditing ? <button type="submit" className="bg-red-500 mt-4 text-slate-900 rounded-md w-full p-2">
-              Save Changes
-            </button> : <button type="submit" className="bg-red-500 mt-4 text-slate-900 rounded-md w-full p-2">
-              Add User
-            </button>}
+            <button type="submit" className="bg-red-500 mt-4 text-slate-900 rounded-md w-full p-2">
+              {isEditing ? "Save Changes" : "Add User"}
+            </button>
           </div>
         </form>
       
