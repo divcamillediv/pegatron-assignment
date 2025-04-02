@@ -5,6 +5,7 @@ import { UserContext } from "../contexts/UserContextProvider";
 import { Occupation, Gender } from "../types/types";
 import { UserListContext } from "../contexts/UserListContextProvider";
 import { DefaultProfilePic } from "./DefaultProfilePic";
+import axios from "axios";
 
 export const CloseButton = () => {
   const { toggleFormVisibility } = useContext(FormVisibilityContext);
@@ -30,40 +31,54 @@ export const ProfilePic = () => {
       console.log("profilePic of ProfilePic just after upload", profilePic);
     }
   }
-
-  
+/*
+  const uploadProfilePic = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const data = new FormData();
+      data.append('profilePic', files[0]);
+      axios.post('/upload-pfp', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(response => {
+        const {data: filename} = response;
+        setProfilePic(filename);
+      });
+    }
+  }*/
 
   return (
     <>
-    {/* Profile Picture Upload */}
-    <div id="pfp-box" className="justify-evenly mb-4 flex flex-row gap-2 items-center">
-    <div id="profile-picture" className="w-32 h-32">
-      {profilePic ? (
-        <div className="flex w-32 h-32 overflow-hidden items-center justify-center rounded-md">
-          <img
-            alt="not found"
-            width={"250px"}
-            height={"250px"}
-            src={URL.createObjectURL(profilePic)}
-            className="object-cover rounded-md w-full h-full"
-          />
+      {/* Profile Picture Upload */}
+      <div id="pfp-box" className="justify-evenly mb-4 flex flex-row gap-2 items-center">
+        <div id="profile-picture" className="w-32 h-32">
+          {profilePic ? (
+            <div className="flex w-32 h-32 overflow-hidden items-center justify-center rounded-md">
+              <img
+                alt="not found"
+                width={"250px"}
+                height={"250px"}
+                src={URL.createObjectURL(profilePic)}
+                className="object-cover rounded-md w-full h-full"
+              />
+            </div>
+          ) : (
+            <DefaultProfilePic />
+          )}
         </div>
-      ) : (
-        <DefaultProfilePic />
-      )}
-    </div>
-    <label className="bg-slate-100 mt-4 p-2 rounded-md w-1/4 flex flex-col items-center justify-center">
-      <span>Upload</span>
-      <input
-        type="file"
-        name="profilePic"
-        onChange={upload}
-        className="hidden"
-      />
-    </label>
-  </div>
-  </>
-  )
+        <label className="bg-slate-100 mt-4 p-2 rounded-md w-1/4 flex flex-col items-center justify-center">
+          <span>Upload</span>
+          <input
+            type="file"
+            name="profilePic"
+            onChange={upload}
+            className="hidden"
+          />
+        </label>
+      </div>
+    </>
+  );
 }
 
 const UserForm = () => {  
@@ -162,7 +177,7 @@ const UserForm = () => {
                 setBirthday(new Date(e.target.value).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })), id: "birthday" },
               { label: "Occupation", type: "select", value: occupation, onChange: (e: { target: { value: string; }; }) => 
                 setOccupation(e.target.value as Occupation), options: ["Student", "Teacher", "Engineer", "Unemployed"], id: "occupation" },
-              { label: "Phone Number", type: "tel", value: phoneNumber, pattern: "[\d\s+\-().]{7,}",onChange: (e: { target: { value: string; }; }) => 
+              { label: "Phone Number", type: "tel", value: phoneNumber, pattern: "[\d\s+\-().]{7,}", onChange: (e: { target: { value: string; }; }) => 
                 setPhoneNumber(e.target.value), placeholder: "Phone Number", id: "phoneNumber" }
             ].map(({ label, type, value, onChange, placeholder, options, id }) => (
               <div key={id}>
