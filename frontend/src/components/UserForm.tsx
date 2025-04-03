@@ -69,8 +69,7 @@ const UserForm = () => {
   const { setUserList } = useContext(UserListContext);
   const { isFormVisible, toggleFormVisibility } = useContext(FormVisibilityContext);
   let isEditing = Boolean(isBeingEdited);
-
-  const [id, setId] = useState(isEditing ? isBeingEdited?.id ?? new Date().getTime() : new Date().getTime());
+  const [_id, setId] = useState(isEditing ? isBeingEdited?._id ?? "" : "");
   const [name, setName] = useState(isEditing ? isBeingEdited?.name ?? "" : "");
   const [gender, setGender] = useState(isEditing ? isBeingEdited?.gender ?? "Male" : "Male");
   const [birthday, setBirthday] = useState(
@@ -85,7 +84,7 @@ const UserForm = () => {
 
   useEffect(() => {
     if (isBeingEdited) {
-      setId(isBeingEdited.id);
+      setId(isBeingEdited._id);
       setName(isBeingEdited.name);
       setGender(isBeingEdited.gender);
       setBirthday(isBeingEdited.birthday);
@@ -100,7 +99,7 @@ const UserForm = () => {
     e.preventDefault();
 
     function resetFormFields() {
-      setId(new Date().getTime());
+      setId("");
       setName("");
       setGender("Male");
       setBirthday(new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }));
@@ -116,14 +115,16 @@ const UserForm = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ name, gender, birthday, occupation, phoneNumber, profilePic }),
+          body: JSON.stringify({ _id, name, gender, birthday, occupation, phoneNumber, profilePic }),
         });
-    
+        
         if (response.ok) {
           const newUser = await response.json();
           setUser(newUser);
-          setUserList((prevUsers) => [...prevUsers, newUser]); // Update frontend state
+          setUserList((prevUsers) => [...prevUsers, newUser]); 
           resetFormFields();
+          console.log("New user created:", newUser);
+          console.log("New user id:", newUser._id);
         } else {
           console.error("Failed to create user");
         }
@@ -133,22 +134,22 @@ const UserForm = () => {
 
     }
 
-    async function updateUser() {
+    async function updateUser(_id: string) {
       try {
-        const response = await fetch(`http://localhost:3000/users/${id}`, {
+        const response = await fetch(`http://localhost:3000/users/${_id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ name, gender, birthday, occupation, phoneNumber, profilePic }),
+          body: JSON.stringify({ _id, name, gender, birthday, occupation, phoneNumber, profilePic }),
         });
-    
+        console.log(`http://localhost:3000/users/${_id}`);   
         if (response.ok) {
           const updatedUser = await response.json();
           setUser(updatedUser);
           setUserList((prevUsers) =>
             prevUsers.map((user) =>
-              user.id === id ? updatedUser : user
+              user._id === _id ? updatedUser : user
             )
           );
           // Clear the editing state
@@ -163,7 +164,7 @@ const UserForm = () => {
     }
 
     if (isEditing) {
-      await updateUser();
+      await updateUser(_id);
     } else {
       await createUser();
     }

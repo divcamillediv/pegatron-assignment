@@ -2,7 +2,7 @@ import { createContext, useState } from "react";
 import { Gender, Occupation } from "../types/types";
 
 export interface UserState2 {
-    id: number;
+    _id: string;
     name: string;
     gender: Gender;
     birthday: string;
@@ -22,7 +22,7 @@ export const UserContext = createContext<UserHandler>(undefined as any);
 
 export const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<UserState2>({
-        id: new Date().getTime(),
+        _id: "",
         name: "",
         gender: "Male",
         birthday: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),

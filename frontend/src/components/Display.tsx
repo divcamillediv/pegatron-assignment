@@ -12,20 +12,16 @@ const Display = () => {
   const { display } = useContext(DisplayContext);
   const { userList } = useContext(UserListContext);
 
-  // Fetching users from context or props to render multiple UserBoxes
-
-  // liste de users
   const iconBoxes = userList.map((user: UserState2) => (
     <UserBox 
-      key={user.id}
-      id={user.id}
-      name={user.name} 
-      gender={user.gender} 
-      birthday={user.birthday} 
-      occupation={user.occupation} 
-      phoneNumber={user.phoneNumber} 
+      key={user._id}
+      name={user.name}
+      gender={user.gender}
+      birthday={user.birthday}
+      occupation={user.occupation}
+      phoneNumber={user.phoneNumber}
       profilePic={user.profilePic} 
-    />
+      _id={user._id}    />
   ));
 
   const totalPages = Math.ceil(iconBoxes.length / itemsPerPage);
