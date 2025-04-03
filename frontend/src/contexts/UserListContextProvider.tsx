@@ -1,6 +1,5 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { UserState2 } from "../contexts/UserContextProvider";
-import { loadState } from "../localStorage";
 
 interface UserListHandler {
     userList: UserState2[];
@@ -24,6 +23,24 @@ export const UserListContext = createContext<UserListHandler>(undefined as any);
 
 const UserListContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [userList, setUserList] = useState<UserState2[]>(emptyUserList);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+          try {
+            const response = await fetch("http://localhost:5000/users");
+            if (response.ok) {
+              const data = await response.json();
+              setUserList(data); // Set users from backend
+            } else {
+              console.error("Failed to fetch users");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        };
+      
+        fetchUsers();
+      }, []);
 
     return (
         <UserListContext.Provider value={{ userList, setUserList }}>

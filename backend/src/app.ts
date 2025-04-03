@@ -23,14 +23,23 @@ app.post('/users', async (req: Request, res: Response) => {
   try {
     const { name, gender, birthday, occupation, phoneNumber, profilePicture } = req.body;
     
-    if (!name || !gender || !birthday || !occupation || !phoneNumber) {
+    if (!name || !gender || !birthday || !occupation) {
       res.status(400).json({ message: 'All fields are required' });
+      return;
+    }
+
+    // Make sure 'birthday' is a valid Date
+    const formattedBirthday = new Date(birthday);
+
+    if (isNaN(formattedBirthday.getTime())) {
+      res.status(400).json({ message: 'Invalid date format' });
+      return;
     }
 
     const user = new User({
       name,
       gender,
-      birthday,
+      birthday: new Date(birthday).toISOString().split("T")[0],
       occupation,
       phoneNumber,
       profilePicture
@@ -48,7 +57,11 @@ app.post('/users', async (req: Request, res: Response) => {
 app.get('/users', async (req: Request, res: Response) => {
   try {
     const users = await User.find();
-    res.json(users);
+    const formattedUsers = users.map(user => ({
+      ...user.toObject(), 
+      birthday: user.birthday.toISOString().split("T")[0] 
+    }));
+    res.json(formattedUsers);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -114,7 +127,7 @@ app.delete('/user/:id', async (req: Request, res: Response) => {
 });
 
 
-// ignore
+/*
 
 const pfpMiddleware = multer({ dest: 'upload-pfp/' });
 app.post('/upload-pfp', pfpMiddleware.single('profilePic'), async (req: Request, res: Response) => {
@@ -129,4 +142,4 @@ app.post('/upload-pfp', pfpMiddleware.single('profilePic'), async (req: Request,
   }
   res.json(uploadedPfp);
 });
-
+*/

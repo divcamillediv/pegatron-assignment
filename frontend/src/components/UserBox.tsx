@@ -2,7 +2,7 @@ import { FaEdit, FaTrash } from "react-icons/fa"; // Importing edit and delete i
 import { useContext } from "react"
 import { DisplayContext } from "../contexts/DisplayContextProvider"
 import { Gender, Occupation } from "../types/types";
-import { UserListContext, UserListHandler } from "../contexts/UserListContextProvider";
+import { UserListContext } from "../contexts/UserListContextProvider";
 import { UserContext } from "../contexts/UserContextProvider";
 import { FormVisibilityContext } from "../contexts/FormVisibilityContextProvider";
 import { DefaultProfilePic } from "./DefaultProfilePic";
@@ -41,9 +41,10 @@ const UserBoxTitle = () => {
 // UserBox is the main component that displays the user's information.
 const UserBox = ({ id, name, gender, birthday, occupation, phoneNumber, profilePic }: UserBoxProps) => {
   const { display } = useContext(DisplayContext);
+  const { setUserList } = useContext(UserListContext);
   const { toggleFormVisibility } = useContext(FormVisibilityContext);
   const { setIsBeingEdited } = useContext(UserContext);
-  const userListHandler = useContext(UserListContext);
+
   //form fields
   const isGrid = display === "grid";
 
@@ -52,15 +53,21 @@ const UserBox = ({ id, name, gender, birthday, occupation, phoneNumber, profileP
     setIsBeingEdited({ id, name, gender, birthday, occupation, phoneNumber, profilePic });
   };
 
-  const handleDelete = (userListHandler: UserListHandler, id: number): void => {
-    console.log("Deleting user with ID:", id);
-    const updatedUserList = userListHandler.userList.filter((user) => user.id !== id);
-    userListHandler.setUserList(updatedUserList); // Ensure this updates the state correctly
-    console.log(updatedUserList);
-  }
-  
-  console.log("profilePic of Userbox", profilePic);
-  console.log("name of Userbox", name);
+  const handleDelete = async (): Promise<void> => {
+      try {
+        const response = await fetch(`http://localhost:3000/users/${id}`, {
+          method: "DELETE",
+        });
+    
+        if (response.ok) {
+          setUserList((prevUsers) => prevUsers.filter((user) => user.id !== id));
+        } else {
+          console.error("Failed to delete user");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
 
 
   return (  
@@ -81,7 +88,9 @@ const UserBox = ({ id, name, gender, birthday, occupation, phoneNumber, profileP
           {titles.map((title, index) => (
             <div className="flex flex-col items-start" key={index}>
               <span className='font-bold text-gray-800'>{title}</span>
-              <span className="font-medium text-gray-700">{[name, gender, birthday, occupation, phoneNumber][index]}</span>
+              <span className="font-medium text-gray-700">
+                {index === 2 ? new Date(birthday).toISOString().split("T")[0] : [name, gender, occupation, phoneNumber][index]}
+              </span>
             </div>
           ))}
         </div>
@@ -95,7 +104,7 @@ const UserBox = ({ id, name, gender, birthday, occupation, phoneNumber, profileP
       )}
       <div className={`flex flex-row justify-between mt-2`}>
         <FaEdit onClick={handleEdit} className="text-blue-600 w-6 h-6 hover:text-blue-800 transition-colors cursor-pointer" />
-        <FaTrash onClick={() => handleDelete(userListHandler, id)} className="text-red-600 w-6 h-6 hover:text-red-800 transition-colors cursor-pointer" />
+        <FaTrash onClick={handleDelete} className="text-red-600 w-6 h-6 hover:text-red-800 transition-colors cursor-pointer" />
       </div>
     </div>
   )

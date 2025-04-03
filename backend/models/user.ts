@@ -17,7 +17,7 @@ const userSchema = new Schema({
   gender: { type: String, required: true, enum: ['Male', 'Female', 'Other'] },
   birthday: { type: Date, required: true },
   occupation: { type: String, required: true, enum: ["Student", "Teacher", "Engineer", "Unemployed"] },
-  phoneNumber: { type: String, required: true },
+  phoneNumber: { type: String, required: false },
   profilePicture: { type: String, required: false },
 });
 

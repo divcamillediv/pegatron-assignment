@@ -5,7 +5,6 @@ import { UserContext } from "../contexts/UserContextProvider";
 import { Occupation, Gender } from "../types/types";
 import { UserListContext } from "../contexts/UserListContextProvider";
 import { DefaultProfilePic } from "./DefaultProfilePic";
-import axios from "axios";
 
 export const CloseButton = () => {
   const { toggleFormVisibility } = useContext(FormVisibilityContext);
@@ -31,22 +30,6 @@ export const ProfilePic = () => {
       console.log("profilePic of ProfilePic just after upload", profilePic);
     }
   }
-/*
-  const uploadProfilePic = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      const data = new FormData();
-      data.append('profilePic', files[0]);
-      axios.post('/upload-pfp', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }).then(response => {
-        const {data: filename} = response;
-        setProfilePic(filename);
-      });
-    }
-  }*/
 
   return (
     <>
@@ -113,40 +96,10 @@ const UserForm = () => {
   }, [isBeingEdited]);
 
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newUser = {
-      id: isEditing ? id : new Date().getTime(),
-      name,
-      gender,
-      birthday,
-      occupation,
-      phoneNumber,
-      profilePic: profilePic
-    };
 
-    console.log("profilePic of UserForm at creation of newUser", profilePic);
-
-    if (isEditing) {
-      // Update the user in the list
-      setUserList((prevUsers) =>
-        prevUsers.map((user) => (user.id === id ? newUser : user))
-      );
-      // Optionally update the current user in your context
-      setUser(newUser);
-      // Clear the editing state
-      setIsBeingEdited(null);
-      isEditing = false;
-      console.log("profilePic of UserForm at the end of editing", profilePic);
-    } else {
-      // Add a new user
-      setUser(newUser);
-      setUserList((prevUsers) => [...prevUsers, newUser]);
-    }
-
-    // Reset form fields if not editing
-    if (!isEditing) {
-      console.log("profilePic of UserForm at the end of resetting form fields", profilePic);
+    function resetFormFields() {
       setId(new Date().getTime());
       setName("");
       setGender("Male");
@@ -156,9 +109,68 @@ const UserForm = () => {
       setProfilePic(null);
     }
 
-    toggleFormVisibility();
+    async function createUser() {
+      try {
+        const response = await fetch("http://localhost:3000/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, gender, birthday, occupation, phoneNumber, profilePic }),
+        });
+    
+        if (response.ok) {
+          const newUser = await response.json();
+          setUser(newUser);
+          setUserList((prevUsers) => [...prevUsers, newUser]); // Update frontend state
+          resetFormFields();
+        } else {
+          console.error("Failed to create user");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
 
-    console.log("profilePic of UserForm at end", profilePic);
+    }
+
+    async function updateUser() {
+      try {
+        const response = await fetch(`http://localhost:3000/users/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, gender, birthday, occupation, phoneNumber, profilePic }),
+        });
+    
+        if (response.ok) {
+          const updatedUser = await response.json();
+          setUser(updatedUser);
+          setUserList((prevUsers) =>
+            prevUsers.map((user) =>
+              user.id === id ? updatedUser : user
+            )
+          );
+          // Clear the editing state
+          setIsBeingEdited(null);
+          isEditing = false;
+        } else {
+          console.error("Failed to update user");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+
+    if (isEditing) {
+      await updateUser();
+    } else {
+      await createUser();
+    }
+
+    if (!isEditing) resetFormFields();
+
+    toggleFormVisibility();
   };
 
 
