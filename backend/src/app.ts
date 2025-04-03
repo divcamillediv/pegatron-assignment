@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import UserModel from "../models/user";
-import userRouter from './routes/userRoutes';
 import multer from 'multer';
 import fs from 'fs';
 import bodyParser from 'body-parser';
@@ -9,7 +8,6 @@ import mongoose from "mongoose";
 
 export const app = express();
 app.use(express.json());
-app.use('/backend/users', userRouter);
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
@@ -103,6 +101,7 @@ app.put('/user/:id', async (req: Request, res: Response) => {
   }
 });
 
+// delete a user
 app.delete('/user/:id', async (req: Request, res: Response) => {
   try{
     const { id } = req.params;
