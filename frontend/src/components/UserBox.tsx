@@ -34,7 +34,7 @@ const titles = ["Name", "Gender", "Birthday", "Occupation", "Phone Number"];
 const UserBoxTitle = () => {
   return (
     <div className="bg-red-600 text-white flex flex-col p-2 rounded-lg">
-      <div className="grid grid-cols-5 justify-items-start">
+      <div className="grid grid-cols-3 truncate sm:grid-cols-5 justify-items-start">
         {titles.map((title) => (
           <span key={title} className="font-bold">{title}</span>
         ))}
@@ -89,7 +89,7 @@ const UserBox = ({ _id, name, gender, birthday, occupation, phoneNumber, profile
   )}
 </div>
       {isGrid ? (
-        <div className="grid grid-cols-3 gap-2 justify-items-start">
+        <div className="grid grid-cols-1 truncate sm:grid-cols-2 gap-2 justify-items-start mb-8">
           {titles.map((title, index) => (
             <div className="flex flex-col items-start" key={index}>
               <span className='font-bold text-gray-800'>{title}</span>
@@ -101,7 +101,7 @@ const UserBox = ({ _id, name, gender, birthday, occupation, phoneNumber, profile
           ))}
         </div>
       ) : (
-      <div className="grid grid-cols-5 gap-2 justify-items-start">
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 justify-items-start mb-6">
         { [name, gender, birthday, occupation, phoneNumber].map((value, index) => (
           <span key={index} className="font-medium text-gray-700">
             {value === birthday ? formattedBirthday : value}
@@ -110,7 +110,7 @@ const UserBox = ({ _id, name, gender, birthday, occupation, phoneNumber, profile
       </div>
 
       )}
-      <div className={`flex flex-row justify-between mt-2`}>
+      <div className={`flex flex-row justify-between mt-2 absolute bottom-2 left-2 right-2`}>
         <FaEdit onClick={() => handleEdit(_id)} className="text-blue-600 w-6 h-6 hover:text-blue-800 transition-colors cursor-pointer" />
         <FaTrash onClick={() => handleDelete(_id)} className="text-red-600 w-6 h-6 hover:text-red-800 transition-colors cursor-pointer" />
       </div>

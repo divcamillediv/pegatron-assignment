@@ -27,11 +27,7 @@ const SearchBar = () => {
   const [searchValue, setSearchValue] = useState('')
   const debouncedSearchValue = useDebounce(searchValue, 1000)
 
-  useEffect(() => {
-    if (debouncedSearchValue.trim() !== '') {
-      fetchUsers(debouncedSearchValue)
-    }
-  }, [debouncedSearchValue])
+  useEffect(() => {fetchUsers(debouncedSearchValue)}, [debouncedSearchValue])
 
   const fetchUsers = async (query: string) => {
     const res = await fetch(`http://localhost:3000/users?search=${encodeURIComponent(query)}`)
@@ -47,9 +43,6 @@ const SearchBar = () => {
         onChange={(e) => setSearchValue(e.target.value)}
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <button className="px-4 py-2 ml-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600">
-        <FaSearch className="w-6 h-6"/>
-      </button>
     </div>
   )
 }
