@@ -46,14 +46,12 @@ const UserBoxTitle = () => {
 // UserBox is the main component that displays the user's information.
 const UserBox = ({ _id, name, gender, birthday, occupation, phoneNumber, profilePic }: UserBoxProps) => {
   const { display } = useContext(DisplayContext);
-  const { userList,setUserList } = useContext(UserListContext);
+  const { setUserList } = useContext(UserListContext);
   const { toggleFormVisibility } = useContext(FormVisibilityContext);
   const { setIsBeingEdited } = useContext(UserContext);
 
-  console.log("UserBox userList:", userList);
-  console.log(userList.map((user) => user._id));
-
   const isGrid = display === "grid";
+  const formattedBirthday = new Date(birthday).toISOString().split("T")[0];
 
   const handleEdit = (_id: string) => {
     toggleFormVisibility();
@@ -96,7 +94,7 @@ const UserBox = ({ _id, name, gender, birthday, occupation, phoneNumber, profile
             <div className="flex flex-col items-start" key={index}>
               <span className='font-bold text-gray-800'>{title}</span>
               <span className="font-medium text-gray-700">
-          {index === 2 ? new Date(birthday).toISOString().split("T")[0] : 
+          {index === 2 ? formattedBirthday : 
            index === 3 ? occupation : index === 4 ? phoneNumber : [name, gender][index]}
         </span>
             </div>
@@ -105,7 +103,9 @@ const UserBox = ({ _id, name, gender, birthday, occupation, phoneNumber, profile
       ) : (
       <div className="grid grid-cols-5 gap-2 justify-items-start">
         { [name, gender, birthday, occupation, phoneNumber].map((value, index) => (
-          <span key={index} className="font-medium text-gray-700">{value}</span>
+          <span key={index} className="font-medium text-gray-700">
+            {value === birthday ? formattedBirthday : value}
+          </span>
         )) }
       </div>
 

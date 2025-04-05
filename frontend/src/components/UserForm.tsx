@@ -5,6 +5,7 @@ import { UserContext } from "../contexts/UserContextProvider";
 import { Occupation, Gender } from "../types/types";
 import { UserListContext } from "../contexts/UserListContextProvider";
 import { DefaultProfilePic } from "./DefaultProfilePic";
+import { parseISO, isValid } from 'date-fns';
 
 export const CloseButton = () => {
   const { toggleFormVisibility } = useContext(FormVisibilityContext);
@@ -174,20 +175,34 @@ const UserForm = () => {
     toggleFormVisibility();
   };
 
+  const handleDateChange = (e: { target: { value: string; }; }) => {
+    const parsed = parseISO(e.target.value); 
+    if (!isValid(parsed)) {
+      console.error('Invalid date format');
+    } else{
+    let inputValue = e.target.value.replace(/\D/g, ""); // Strip non-numeric characters
+    if (inputValue.length <= 4) {
+      setBirthday(inputValue);
+    } else {
+      inputValue = `${inputValue.slice(0, 4)}-${inputValue.slice(4, 6)}-${inputValue.slice(6, 8)}`;
+      setBirthday(inputValue);
+    }
+  }
+  };
+
 
   return isFormVisible && 
      (
     <div id="big-box" className="bg-amber-500 flex-col flex p-2 rounded-lg">
       <CloseButton />
         <form id="form-box" onSubmit={handleSubmit}>
-          <ProfilePic />
+          <ProfilePic />   
           <div id="not-pfp">            {[
               { label: "Name", type: "text", value: name, onChange: (e: { target: { value: SetStateAction<string>; }; }) => 
                 setName(e.target.value), placeholder: "Name", id: "name" },
               { label: "Gender", type: "select", value: gender, onChange: (e: { target: { value: string; }; }) => 
                 setGender(e.target.value as Gender), options: ["Male", "Female", "Other"], id: "gender" },
-              { label: "Birthday", type: "date", value: new Date(birthday).toISOString().split("T")[0], onChange: (e: { target: { value: string | number | Date; }; }) => 
-                setBirthday(new Date(e.target.value).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })), id: "birthday" },
+              { label: "Birthday", type: "date", value: new Date(birthday).toISOString().split("T")[0], onChange: (e: { target: { value: string; }; }) => handleDateChange(e), id: "birthday" },
               { label: "Occupation", type: "select", value: occupation, onChange: (e: { target: { value: string; }; }) => 
                 setOccupation(e.target.value as Occupation), options: ["Student", "Teacher", "Engineer", "Unemployed"], id: "occupation" },
               { label: "Phone Number", type: "tel", value: phoneNumber, pattern: "[\d\s+\-().]{7,}", onChange: (e: { target: { value: string; }; }) => 
