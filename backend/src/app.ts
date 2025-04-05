@@ -4,19 +4,22 @@ import UserModel from "../models/user";
 import bodyParser from 'body-parser';
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
+import multer from "multer";
+import router from "./routes/userRoutes";
 
 export const app = express();
 app.use(express.json());
 app.use(cors()); 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(router)
 
 app.get("/", (req: Request, res: Response) => {
   res.send("API is running");
 });
 
 const User = UserModel;
-
+/*
 // Create a new user
 app.post('/users', async (req: Request, res: Response) => {
   try {
@@ -112,3 +115,22 @@ app.delete('/users/:id', async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Cannot delete user' });
   }
 });
+*/
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, __dirname+'../profilePics/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now())
+  }
+})
+
+var upload = multer({ storage: storage })
+
+//passing multer as middleware
+app.post('/profile',upload.any(), function(req, res) {
+   console.log(req.body)
+
+
+ });
