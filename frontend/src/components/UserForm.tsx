@@ -4,8 +4,8 @@ import { FormVisibilityContext } from "../contexts/FormVisibilityContextProvider
 import { UserContext } from "../contexts/UserContextProvider"; 
 import { Occupation, Gender } from "../types/types";
 import { UserListContext } from "../contexts/UserListContextProvider";
-import { DefaultProfilePic } from "./DefaultProfilePic";
 import { parseISO, isValid } from 'date-fns';
+import { ProfilePic } from "./ProfilePic";
 
 export const CloseButton = () => {
   const { toggleFormVisibility } = useContext(FormVisibilityContext);
@@ -16,54 +16,6 @@ export const CloseButton = () => {
     </div>
   );
 };
-
-// ProfilePic displays a user's profile picture when the display is grid.
-export const ProfilePic = () => {  
-  const { isBeingEdited } = useContext(UserContext);
-  const isEditing = Boolean(isBeingEdited);
-  const [profilePic, setProfilePic] = useState<File | null>(isEditing ? isBeingEdited?.profilePic ?? null : null);
-  console.log("profilePic of ProfilePic", profilePic);
-  
-  const upload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      setProfilePic(files[0]);
-      console.log("profilePic of ProfilePic just after upload", profilePic);
-    }
-  }
-
-  return (
-    <>
-      {/* Profile Picture Upload */}
-      <div id="pfp-box" className="justify-evenly mb-4 flex flex-row gap-2 items-center">
-        <div id="profile-picture" className="w-32 h-32">
-          {profilePic ? (
-            <div className="flex w-32 h-32 overflow-hidden items-center justify-center rounded-md">
-              <img
-                alt="not found"
-                width={"250px"}
-                height={"250px"}
-                src={URL.createObjectURL(profilePic)}
-                className="object-cover rounded-md w-full h-full"
-              />
-            </div>
-          ) : (
-            <DefaultProfilePic />
-          )}
-        </div>
-        <label className="bg-slate-100 mt-4 p-2 rounded-md w-1/4 flex flex-col items-center justify-center">
-          <span>Upload</span>
-          <input
-            type="file"
-            name="profilePic"
-            onChange={upload}
-            className="hidden"
-          />
-        </label>
-      </div>
-    </>
-  );
-}
 
 const UserForm = () => {  
   const { setUser, isBeingEdited, setIsBeingEdited } = useContext(UserContext);
@@ -80,7 +32,7 @@ const UserForm = () => {
   );
   const [occupation, setOccupation] = useState(isEditing ? isBeingEdited?.occupation ?? "Student" : "Student");
   const [phoneNumber, setPhoneNumber] = useState(isEditing ? isBeingEdited?.phoneNumber ?? "" : "");
-  const [profilePic, setProfilePic] = useState<File | null>(isEditing ? isBeingEdited?.profilePic ?? null : null);
+  const [profilePic, setProfilePic] = useState(isEditing ? isBeingEdited?.profilePic ?? "0default.jpg" : "0default.jpg");
   console.log("profilePic of UserForm at start", profilePic);
 
   useEffect(() => {
@@ -106,7 +58,7 @@ const UserForm = () => {
       setBirthday(new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }));
       setOccupation("Student");
       setPhoneNumber("");
-      setProfilePic(null);
+      setProfilePic("0default.jpg");
     }
 
     async function createUser() {
@@ -135,6 +87,37 @@ const UserForm = () => {
 
     }
 
+    async function createUser2() {
+      try {
+        const formData = new FormData();
+        formData.append("_id", _id);
+        formData.append("name", name);
+        formData.append("gender", gender);
+        formData.append("birthday", birthday);
+        formData.append("occupation", occupation);
+        formData.append("phoneNumber", phoneNumber);
+        formData.append("profilePicture", profilePic);
+
+        const response = await fetch("http://localhost:3000/users", {
+          method: "POST",
+          body: formData, // no need for headers, browser sets it for FormData
+        });
+    
+        if (response.ok) {
+          const newUser = await response.json();
+          setUser(newUser);
+          setUserList((prevUsers) => [...prevUsers, newUser]); 
+          resetFormFields();
+          console.log("New user created:", newUser);
+        } else {
+          console.error("Failed to create user");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+    
+
     async function updateUser(_id: string) {
       try {
         const response = await fetch(`http://localhost:3000/users/${_id}`, {
@@ -144,7 +127,6 @@ const UserForm = () => {
           },
           body: JSON.stringify({ _id, name, gender, birthday, occupation, phoneNumber, profilePic }),
         });
-        console.log(`http://localhost:3000/users/${_id}`);   
         if (response.ok) {
           const updatedUser = await response.json();
           setUser(updatedUser);
@@ -164,6 +146,42 @@ const UserForm = () => {
       }
     }
 
+    async function updateUser2(_id: string) {
+      try {
+        const formData = new FormData();
+        formData.append("_id", _id);
+        formData.append("name", name);
+        formData.append("gender", gender);
+        formData.append("birthday", birthday);
+        formData.append("occupation", occupation);
+        formData.append("phoneNumber", phoneNumber);
+        formData.append("profilePicture", profilePic);
+
+        const response = await fetch(`http://localhost:3000/users/${_id}`, {
+          method: "PUT",
+          body: formData, // no need for headers, browser sets it for FormData
+        });
+    
+        if (response.ok) {
+          const updatedUser = await response.json();
+          setUser(updatedUser);
+          setUserList((prevUsers) =>
+            prevUsers.map((user) =>
+              user._id === _id ? updatedUser : user
+            )
+          );
+          // Clear the editing state
+          setIsBeingEdited(null);
+          isEditing = false;
+        } else {
+          console.error("Failed to update user");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+    
+
     if (isEditing) {
       await updateUser(_id);
     } else {
@@ -175,6 +193,7 @@ const UserForm = () => {
     toggleFormVisibility();
   };
 
+  // date mask
   const handleDateChange = (e: { target: { value: string; }; }) => {
     const parsed = parseISO(e.target.value); 
     if (!isValid(parsed)) {
@@ -195,8 +214,8 @@ const UserForm = () => {
      (
     <div id="big-box" className="bg-amber-500 flex-col flex p-2 rounded-lg">
       <CloseButton />
-        <form id="form-box" onSubmit={handleSubmit}>
-          <ProfilePic />   
+        <form id="form-box" onSubmit={handleSubmit} method="POST" encType="multipart/form-data">
+          <ProfilePic />
           <div id="not-pfp">            {[
               { label: "Name", type: "text", value: name, onChange: (e: { target: { value: SetStateAction<string>; }; }) => 
                 setName(e.target.value), placeholder: "Name", id: "name" },

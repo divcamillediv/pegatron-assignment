@@ -1,11 +1,11 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
-import UserModel from "../models/user";
 import bodyParser from 'body-parser';
-import mongoose from "mongoose";
-import { ObjectId } from "mongodb";
 import multer from "multer";
-import router from "./routes/userRoutes";
+import router from "./routes/userRoutes.ts";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
 export const app = express();
 app.use(express.json());
@@ -13,124 +13,55 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(router)
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 
 app.get("/", (req: Request, res: Response) => {
   res.send("API is running");
 });
 
-const User = UserModel;
-/*
-// Create a new user
-app.post('/users', async (req: Request, res: Response) => {
-  try {
-    const { name, gender, birthday, occupation, phoneNumber, profilePicture } = req.body;
-    
-    if (!name || !gender || !birthday || !occupation) {
-      res.status(400).json({ message: 'All fields are required' });
-      return;
-    }
-
-    const user = new User({
-      name,
-      gender,
-      birthday,
-      occupation,
-      phoneNumber,
-      profilePicture
-    });
-
-    const savedUser = await user.save();
-    res.status(201).json(savedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// get all users
-app.get('/users', async (req: Request, res: Response) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// find a specific user
-app.get('/users/:id', async (req: Request, res: Response) => {
-  try{
-    const { id } = req.params;
-    const user = await User.findById(id);
-    res.status(200).json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Cannot find user' });
-  }
-});
-
-// Update a user
-app.put('/users/:id', async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { name, gender, birthday, occupation, phoneNumber, profilePicture } = req.body;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      res.status(400).json({ message: 'Invalid user ID' });
-    }
-
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      {
-        name,
-        gender,
-        birthday,
-        occupation,
-        phoneNumber,
-        profilePicture
-      },
-      { new: true }
-    );
-
-    if (!updatedUser) {
-      res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// delete a user
-app.delete('/users/:id', async (req: Request, res: Response) => {
-  try{
-    const { id } = req.params;
-    const result = await User.findByIdAndDelete(id);
-    res.status(200).json(result);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Cannot delete user' });
-  }
-});
-*/
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, __dirname+'../profilePics/')
+  destination: (req, file, cb) => {
+    cb(null, join(__dirname, '../profilePics/'))
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now())
+    cb(null, Date.now() + path.extname(file.originalname))
   }
 })
 
 var upload = multer({ storage: storage })
 
+app.get('/upload', (req: Request, res: Response) => {
+  res.render('profilePicture')
+})
+
+app.get('/upload/undefined', (req: Request, res: Response) => {
+  res.json({ path: '0default.jpg' });
+})
+
 //passing multer as middleware
-app.post('/profile',upload.any(), function(req, res) {
-   console.log(req.body)
-
-
+app.post('/upload/',upload.single('profilePic'), function(req, res) {
+  if (req.file) {
+    const fileName = req.file.filename; // Get the file name
+    res.json({ path: fileName }); // Return the file name in the response
+  } else {
+    res.status(400).json({ message: 'File upload failed' });
+  }
  });
+
+app.get('/upload/:profilePic', (req: Request, res: Response) => {
+  const profilePic = req.params.profilePic;
+  const filePath = path.join(__dirname, '../profilePics', profilePic);
+  res.sendFile(filePath);
+});
+
+app.use('/upload', express.static(path.join(__dirname, '../profilePics')));
+

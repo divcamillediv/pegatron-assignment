@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Gender, Occupation } from '../types/types';
+import { Gender, Occupation } from '../types/types.ts';
 const {Schema} = mongoose;
 
 // Interface for User document

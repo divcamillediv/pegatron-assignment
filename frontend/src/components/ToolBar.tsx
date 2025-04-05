@@ -1,4 +1,3 @@
-import { FaSearch } from "react-icons/fa"
 import { FaUserPlus } from "react-icons/fa"
 import { useContext, useEffect, useState} from "react";
 import { FormVisibilityContext } from "../contexts/FormVisibilityContextProvider";

@@ -1,5 +1,5 @@
-import { startServer } from "./server";
-import { connectDB } from "./database";
+import { startServer } from "./server.ts";
+import { connectDB } from "./database.ts";
 
 connectDB()
 startServer()

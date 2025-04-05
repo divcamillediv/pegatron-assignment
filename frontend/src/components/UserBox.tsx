@@ -5,7 +5,6 @@ import { Gender, Occupation } from "../types/types";
 import { UserListContext } from "../contexts/UserListContextProvider";
 import { UserContext } from "../contexts/UserContextProvider";
 import { FormVisibilityContext } from "../contexts/FormVisibilityContextProvider";
-import { DefaultProfilePic } from "./DefaultProfilePic";
 
 /**
  * UserBox is the component that displays a user's information.
@@ -21,7 +20,7 @@ interface UserBoxProps {
   birthday: string;
   occupation: Occupation;
   phoneNumber: string;
-  profilePic: File | null;
+  profilePic: string;
 }
 
 const titles = ["Name", "Gender", "Birthday", "Occupation", "Phone Number"];
@@ -46,7 +45,8 @@ const UserBoxTitle = () => {
 // UserBox is the main component that displays the user's information.
 const UserBox = ({ _id, name, gender, birthday, occupation, phoneNumber, profilePic }: UserBoxProps) => {
   const { display } = useContext(DisplayContext);
-  const { setUserList } = useContext(UserListContext);
+  const { setUserList } = useContext(UserListContext)
+  const { user } = useContext(UserContext);
   const { toggleFormVisibility } = useContext(FormVisibilityContext);
   const { setIsBeingEdited } = useContext(UserContext);
 
@@ -59,7 +59,6 @@ const UserBox = ({ _id, name, gender, birthday, occupation, phoneNumber, profile
   };
 
   const handleDelete = async (_id: string): Promise<void> => {
-    console.log("Deleting user with _id:", _id);
     try {
       const response = await fetch(`http://localhost:3000/users/${_id}`, {
         method: "DELETE",
@@ -78,16 +77,12 @@ const UserBox = ({ _id, name, gender, birthday, occupation, phoneNumber, profile
   return (  
     <div className={`bg-amber-500 flex flex-col p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105`}>
       <div className={`mb-8 ${isGrid ? 'flex justify-center' : 'hidden'}`}>
-  {profilePic ? (
-    <img 
-      src={typeof profilePic === 'string' ? profilePic : URL.createObjectURL(profilePic)}
-      alt="pfp not found" 
-      className="w-48 h-48 rounded-xl border-2 border-white shadow-md" 
-    />
-  ) : (
-    <DefaultProfilePic />
-  )}
-</div>
+        <img 
+          src={`http://localhost:3000/upload/${user.profilePic}`}
+          alt="pfp not found" 
+          className="w-48 h-48 rounded-xl border-2 border-white shadow-md" 
+        />
+      </div>
       {isGrid ? (
         <div className="grid grid-cols-1 truncate sm:grid-cols-2 gap-2 justify-items-start mb-8">
           {titles.map((title, index) => (

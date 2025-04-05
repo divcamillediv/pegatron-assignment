@@ -8,7 +8,7 @@ export interface UserState2 {
     birthday: string;
     occupation: Occupation;
     phoneNumber: string;
-    profilePic: File | null;
+    profilePic: string;
   }
 
 interface UserHandler {
@@ -28,7 +28,7 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
         birthday: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
         occupation: "Student",
         phoneNumber: "",
-        profilePic: null,
+        profilePic: "0default.jpg",
     });
 
     const [isBeingEdited, setIsBeingEdited] = useState<UserState2 | null>(null);

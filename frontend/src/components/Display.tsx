@@ -33,7 +33,7 @@ const Display = () => {
   return (
     <div>
       {display === "grid" ? (
-        <div className="bg-red-100 grid grid-cols-3 grid-rows-2 rounded-lg p-2 gap-2 w-full h-full">
+        <div className="bg-red-100 grid grid-cols-1 sm:grid-cols-3 grid-rows-2 rounded-lg p-2 gap-2 w-full h-full">
           <UserForm/>
           {displayedIcons}
         </div>

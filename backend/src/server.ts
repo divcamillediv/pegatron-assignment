@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { app } from "./app";
+import { app } from "./app.ts";
 
 export const startServer = ():void=>{
   dotenv.config();
