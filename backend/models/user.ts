@@ -9,7 +9,7 @@ interface IUser extends Document {
   birthday: Date;
   occupation: Occupation;
   phoneNumber: string;
-  profilePicture: string;
+  profilePic: string;
 }
 
 const userSchema = new Schema({
@@ -18,7 +18,7 @@ const userSchema = new Schema({
   birthday: { type: Date, required: true },
   occupation: { type: String, required: true, enum: ["Student", "Teacher", "Engineer", "Unemployed"] },
   phoneNumber: { type: String, required: false },
-  profilePicture: { type: String, required: false },
+  profilePic: { type: String, required: false },
 });
 
 const UserModel = mongoose.model<IUser>('User', userSchema);

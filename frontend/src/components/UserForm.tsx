@@ -5,7 +5,6 @@ import { UserContext } from "../contexts/UserContextProvider";
 import { Occupation, Gender } from "../types/types";
 import { UserListContext } from "../contexts/UserListContextProvider";
 import { parseISO, isValid } from 'date-fns';
-import { ProfilePic } from "./ProfilePic";
 
 export const CloseButton = () => {
   const { toggleFormVisibility } = useContext(FormVisibilityContext);
@@ -18,7 +17,7 @@ export const CloseButton = () => {
 };
 
 const UserForm = () => {  
-  const { setUser, isBeingEdited, setIsBeingEdited } = useContext(UserContext);
+  const { user, setUser, isBeingEdited, setIsBeingEdited } = useContext(UserContext);
   const { setUserList } = useContext(UserListContext);
   const { isFormVisible, toggleFormVisibility } = useContext(FormVisibilityContext);
   let isEditing = Boolean(isBeingEdited);
@@ -34,6 +33,9 @@ const UserForm = () => {
   const [phoneNumber, setPhoneNumber] = useState(isEditing ? isBeingEdited?.phoneNumber ?? "" : "");
   const [profilePic, setProfilePic] = useState(isEditing ? isBeingEdited?.profilePic ?? "0default.jpg" : "0default.jpg");
   console.log("profilePic of UserForm at start", profilePic);
+  console.log("user of UserForm at start", user);
+  console.log(user.occupation)
+  console.log(user.profilePic)
 
   useEffect(() => {
     if (isBeingEdited) {
@@ -46,6 +48,32 @@ const UserForm = () => {
       setProfilePic(isBeingEdited.profilePic);
     }
   }, [isBeingEdited]);
+
+  const uploadPFP = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("profilePic", file);
+      try {
+          const response = await fetch("http://localhost:3000/upload", {
+              method: "POST",
+              body: formData,
+          });
+          if (response.ok) {
+              const data = await response.json();
+              console.log("data of ProfilePic", data);
+              console.log("path", data.path);
+              console.log("data.path", data.path);
+              const pfp = data.path;
+              setProfilePic(pfp); // Assuming the backend returns the path in the response
+              console.log("profilePic of ProfilePic", profilePic);
+          } else {
+              console.error("Failed to upload image");
+          }
+      } catch (error) {
+          console.error("Error uploading image:", error);
+      }
+    }
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -87,37 +115,6 @@ const UserForm = () => {
 
     }
 
-    async function createUser2() {
-      try {
-        const formData = new FormData();
-        formData.append("_id", _id);
-        formData.append("name", name);
-        formData.append("gender", gender);
-        formData.append("birthday", birthday);
-        formData.append("occupation", occupation);
-        formData.append("phoneNumber", phoneNumber);
-        formData.append("profilePicture", profilePic);
-
-        const response = await fetch("http://localhost:3000/users", {
-          method: "POST",
-          body: formData, // no need for headers, browser sets it for FormData
-        });
-    
-        if (response.ok) {
-          const newUser = await response.json();
-          setUser(newUser);
-          setUserList((prevUsers) => [...prevUsers, newUser]); 
-          resetFormFields();
-          console.log("New user created:", newUser);
-        } else {
-          console.error("Failed to create user");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    }
-    
-
     async function updateUser(_id: string) {
       try {
         const response = await fetch(`http://localhost:3000/users/${_id}`, {
@@ -144,43 +141,7 @@ const UserForm = () => {
       } catch (error) {
         console.error("Error:", error);
       }
-    }
-
-    async function updateUser2(_id: string) {
-      try {
-        const formData = new FormData();
-        formData.append("_id", _id);
-        formData.append("name", name);
-        formData.append("gender", gender);
-        formData.append("birthday", birthday);
-        formData.append("occupation", occupation);
-        formData.append("phoneNumber", phoneNumber);
-        formData.append("profilePicture", profilePic);
-
-        const response = await fetch(`http://localhost:3000/users/${_id}`, {
-          method: "PUT",
-          body: formData, // no need for headers, browser sets it for FormData
-        });
-    
-        if (response.ok) {
-          const updatedUser = await response.json();
-          setUser(updatedUser);
-          setUserList((prevUsers) =>
-            prevUsers.map((user) =>
-              user._id === _id ? updatedUser : user
-            )
-          );
-          // Clear the editing state
-          setIsBeingEdited(null);
-          isEditing = false;
-        } else {
-          console.error("Failed to update user");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    }
-    
+    } 
 
     if (isEditing) {
       await updateUser(_id);
@@ -212,10 +173,31 @@ const UserForm = () => {
 
   return isFormVisible && 
      (
-    <div id="big-box" className="bg-amber-500 flex-col flex p-2 rounded-lg">
+    <div id="big-box" className="bg-blue-400 flex-col flex p-2 rounded-lg">
       <CloseButton />
         <form id="form-box" onSubmit={handleSubmit} method="POST" encType="multipart/form-data">
-          <ProfilePic />
+        <div id="pfp-box" className="justify-evenly mb-4 flex flex-row gap-2 items-center">
+          <div id="profile-picture" className="w-32 h-32">
+              <div className="flex w-32 h-32 overflow-hidden items-center justify-center rounded-md">
+                <img
+                  alt="profilePic component"
+                  width={"250px"}
+                  height={"250px"}
+                  src={profilePic ? `http://localhost:3000/upload/${profilePic}` : `http://localhost:3000/upload/0default.jpg`}
+                  className="object-cover rounded-md w-full h-full"
+                />
+              </div>
+          </div>
+            <label className="bg-slate-100 mt-4 p-2 rounded-md w-1/4 flex flex-col items-center justify-center">
+              <span>Upload</span>
+              <input
+                type="file"
+                name="profilePic"
+                onChange={uploadPFP}
+                className="hidden"
+              />
+            </label>
+        </div>
           <div id="not-pfp">            {[
               { label: "Name", type: "text", value: name, onChange: (e: { target: { value: SetStateAction<string>; }; }) => 
                 setName(e.target.value), placeholder: "Name", id: "name" },
@@ -245,7 +227,7 @@ const UserForm = () => {
               </div>
             ))}
 
-            <button type="submit" className="bg-red-500 mt-4 text-slate-900 rounded-md w-full p-2">
+            <button type="submit" className="bg-blue-200 mt-4 text-slate-900 rounded-md w-full p-2">
               {isEditing ? "Save Changes" : "Add User"}
             </button>
           </div>

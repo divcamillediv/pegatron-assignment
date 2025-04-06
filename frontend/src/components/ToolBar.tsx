@@ -13,7 +13,7 @@ const AddUserButton = () => {
 
     return (
         <button 
-          className="bg-amber-500 text-white p-2 rounded-md w-1/8 h-10 flex items-center justify-center" 
+          className="bg-blue-400 text-white p-2 rounded-md w-1/8 h-10 flex items-center justify-center" 
           onClick={handleButtonClick}
         >
           <FaUserPlus className="w-6 h-6" />

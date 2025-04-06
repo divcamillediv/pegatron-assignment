@@ -32,7 +32,7 @@ const titles = ["Name", "Gender", "Birthday", "Occupation", "Phone Number"];
 
 const UserBoxTitle = () => {
   return (
-    <div className="bg-red-600 text-white flex flex-col p-2 rounded-lg">
+    <div className="bg-pink-600 text-white flex flex-col p-2 rounded-lg">
       <div className="grid grid-cols-3 truncate sm:grid-cols-5 justify-items-start">
         {titles.map((title) => (
           <span key={title} className="font-bold">{title}</span>
@@ -45,10 +45,9 @@ const UserBoxTitle = () => {
 // UserBox is the main component that displays the user's information.
 const UserBox = ({ _id, name, gender, birthday, occupation, phoneNumber, profilePic }: UserBoxProps) => {
   const { display } = useContext(DisplayContext);
-  const { setUserList } = useContext(UserListContext)
-  const { user } = useContext(UserContext);
-  const { toggleFormVisibility } = useContext(FormVisibilityContext);
   const { setIsBeingEdited } = useContext(UserContext);
+  const { setUserList } = useContext(UserListContext);
+  const { toggleFormVisibility } = useContext(FormVisibilityContext);
 
   const isGrid = display === "grid";
   const formattedBirthday = new Date(birthday).toISOString().split("T")[0];
@@ -75,13 +74,9 @@ const UserBox = ({ _id, name, gender, birthday, occupation, phoneNumber, profile
   };
 
   return (  
-    <div className={`bg-amber-500 flex flex-col p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105`}>
+    <div className={`bg-blue-300 flex flex-col p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105`}>
       <div className={`mb-8 ${isGrid ? 'flex justify-center' : 'hidden'}`}>
-        <img 
-          src={`http://localhost:3000/upload/${user.profilePic}`}
-          alt="pfp not found" 
-          className="w-48 h-48 rounded-xl border-2 border-white shadow-md" 
-        />
+        <img src={`http://localhost:3000/upload/${profilePic}`} alt="Profile" className="w-32 h-32 rounded-md" />
       </div>
       {isGrid ? (
         <div className="grid grid-cols-1 truncate sm:grid-cols-2 gap-2 justify-items-start mb-8">
@@ -106,8 +101,8 @@ const UserBox = ({ _id, name, gender, birthday, occupation, phoneNumber, profile
 
       )}
       <div className={`flex flex-row justify-between mt-2 absolute bottom-2 left-2 right-2`}>
-        <FaEdit onClick={() => handleEdit(_id)} className="text-blue-600 w-6 h-6 hover:text-blue-800 transition-colors cursor-pointer" />
-        <FaTrash onClick={() => handleDelete(_id)} className="text-red-600 w-6 h-6 hover:text-red-800 transition-colors cursor-pointer" />
+        <FaEdit onClick={() => handleEdit(_id)} className="text-blue-400 w-6 h-6 hover:text-blue-800 transition-colors cursor-pointer" />
+        <FaTrash onClick={() => handleDelete(_id)} className="text-blue-400 w-6 h-6 hover:text-blue-800 transition-colors cursor-pointer" />
       </div>
     </div>
   )

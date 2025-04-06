@@ -9,7 +9,7 @@ const User = UserModel;
 // Create a new user
 router.post('/users', async (req: Request, res: Response) => {
   try {
-    const { name, gender, birthday, occupation, phoneNumber, profilePicture } = req.body;
+    const { name, gender, birthday, occupation, phoneNumber, profilePic } = req.body;
     
     if (!name || !gender || !birthday || !occupation) {
       res.status(400).json({ message: 'All fields are required' });
@@ -22,7 +22,7 @@ router.post('/users', async (req: Request, res: Response) => {
       birthday,
       occupation,
       phoneNumber,
-      profilePicture
+      profilePic
     });
 
     const savedUser = await user.save();
@@ -83,7 +83,7 @@ router.get('/users/:id', async (req: Request, res: Response) => {
 router.put('/users/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, gender, birthday, occupation, phoneNumber, profilePicture } = req.body;
+    const { name, gender, birthday, occupation, phoneNumber, profilePic } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       res.status(400).json({ message: 'Invalid user ID' });
@@ -97,7 +97,7 @@ router.put('/users/:id', async (req: Request, res: Response) => {
         birthday,
         occupation,
         phoneNumber,
-        profilePicture
+        profilePic
       },
       { new: true }
     );

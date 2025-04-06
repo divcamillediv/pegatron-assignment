@@ -40,7 +40,7 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage })
 
 app.get('/upload', (req: Request, res: Response) => {
-  res.render('profilePicture')
+  res.render('profilePic')
 })
 
 app.get('/upload/undefined', (req: Request, res: Response) => {
@@ -57,11 +57,11 @@ app.post('/upload/',upload.single('profilePic'), function(req, res) {
   }
  });
 
-app.get('/upload/:profilePic', (req: Request, res: Response) => {
+/* app.get('/upload/:profilePic', (req: Request, res: Response) => {
   const profilePic = req.params.profilePic;
   const filePath = path.join(__dirname, '../profilePics', profilePic);
   res.sendFile(filePath);
-});
+}); */
 
 app.use('/upload', express.static(path.join(__dirname, '../profilePics')));
 
