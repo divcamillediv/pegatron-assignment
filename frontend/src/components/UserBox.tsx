@@ -32,7 +32,7 @@ const titles = ["Name", "Gender", "Birthday", "Occupation", "Phone Number"];
 
 const UserBoxTitle = () => {
   return (
-    <div className="bg-pink-600 text-white flex flex-col p-2 rounded-lg">
+    <div className="bg-blue-500 text-white flex flex-col p-2 rounded-lg">
       <div className="grid grid-cols-3 truncate sm:grid-cols-5 justify-items-start">
         {titles.map((title) => (
           <span key={title} className="font-bold">{title}</span>

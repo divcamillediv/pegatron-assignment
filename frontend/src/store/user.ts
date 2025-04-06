@@ -1,7 +1,9 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import type {} from '@redux-devtools/extension' // required for devtools typing
+import type {} from '@redux-devtools/extension'
 import { Gender } from '../types/types';
+
+// The moment I learned about zustand, I already set up everything
 
 interface UserState {
   _id: string;
@@ -28,7 +30,7 @@ const useUserStore = create<UserStore>()(
         users: [],
         setUsers: (users) => set({ users }),
         createUser: async (user) => {
-          const response = await fetch('/api/users', {
+          const response = await fetch('/users', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -39,7 +41,7 @@ const useUserStore = create<UserStore>()(
           set((state) => ({ users: [...state.users, data] }));
         },
         updateUser: async (user) => {
-          const response = await fetch(`/api/users/${user._id}`, {
+          const response = await fetch(`/users/${user._id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -50,7 +52,7 @@ const useUserStore = create<UserStore>()(
           set((state) => ({ users: state.users.map((u) => u._id === user._id ? data : u) }));
         },
         deleteUser: async (id) => {
-          const response = await fetch(`/api/users/${id}`, {
+          const response = await fetch(`/users/${id}`, {
             method: 'DELETE',
           });
           const data = await response.json();

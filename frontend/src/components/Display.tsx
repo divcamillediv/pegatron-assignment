@@ -6,9 +6,17 @@ import UserForm from './UserForm';
 import { UserState2 } from '../contexts/UserContextProvider';
 import { UserListContext } from '../contexts/UserListContextProvider';
 
+/**
+ * Display is the component where all the actions are performed.
+ * It's where the users' information is displayed and where the 
+ * user can add a new user, edit or delete an existing user.
+ * It appears in the Layout component.
+ * @returns A Display component.
+ */
+
 const Display = () => {
   const itemsPerPage = 6;
-  const { currentPage, setTotalPages } = useContext(PaginationContext);
+  const { currentPage, setCurrentPage, setTotalPages } = useContext(PaginationContext);
   const { display } = useContext(DisplayContext);
   const { userList } = useContext(UserListContext);
 
@@ -21,14 +29,15 @@ const Display = () => {
       occupation={user.occupation}
       phoneNumber={user.phoneNumber}
       profilePic={user.profilePic} 
-      _id={user._id}    />
+      _id={user._id} />
   ));
 
-  const totalPages = Math.ceil(iconBoxes.length / itemsPerPage);
-  setTotalPages(totalPages);
-  
+  const totalPages = iconBoxes.length === 0 ? 1 : Math.ceil(iconBoxes.length / itemsPerPage);
+  setTotalPages(totalPages);  
   const startIndex = currentPage * itemsPerPage;
   const displayedIcons = iconBoxes.slice(startIndex, startIndex + itemsPerPage);
+
+  if (displayedIcons.length === 0) currentPage > 1 && setCurrentPage(currentPage - 1);
 
   return (
     <div>

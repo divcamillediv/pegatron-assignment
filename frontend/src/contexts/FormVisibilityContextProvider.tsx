@@ -1,11 +1,11 @@
 import React, { createContext, useState, ReactNode } from 'react';
 
-interface FormVisibilityContextType {
+interface FormVisibilityHandler {
     isFormVisible: boolean;
     toggleFormVisibility: () => void;
 }
 
-export const FormVisibilityContext = createContext<FormVisibilityContextType>(undefined as any);
+export const FormVisibilityContext = createContext<FormVisibilityHandler>(undefined as any);
 
 const FormVisibilityProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [isFormVisible, setFormVisible] = useState(false);

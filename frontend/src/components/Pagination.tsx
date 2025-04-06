@@ -2,7 +2,14 @@ import { useContext } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { PaginationContext} from "../contexts/PaginationContextProvider";
 
-const Footer = () => {
+/**
+ * Pagination is the component to navigate through the
+ * Display's pages.
+ * It appears in the Layout component.
+ * @returns A Pagination component.
+ */
+
+const Pagination = () => {
   const { currentPage, setCurrentPage, totalPages } = useContext(PaginationContext);
 
   return (
@@ -26,4 +33,4 @@ const Footer = () => {
   )
 }
 
-export default Footer
+export default Pagination;

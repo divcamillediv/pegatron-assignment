@@ -16,8 +16,15 @@ export const CloseButton = () => {
   );
 };
 
+/**
+ * UserForm is the component to enter a user's information.
+ * It appears when the user clicks on the "Add User" button
+ * (AddUserButton component) in the ToolBar component.
+ * @returns A UserForm component.
+ */
+
 const UserForm = () => {  
-  const { user, setUser, isBeingEdited, setIsBeingEdited } = useContext(UserContext);
+  const { setUser, isBeingEdited, setIsBeingEdited } = useContext(UserContext);
   const { setUserList } = useContext(UserListContext);
   const { isFormVisible, toggleFormVisibility } = useContext(FormVisibilityContext);
   let isEditing = Boolean(isBeingEdited);
@@ -32,10 +39,6 @@ const UserForm = () => {
   const [occupation, setOccupation] = useState(isEditing ? isBeingEdited?.occupation ?? "Student" : "Student");
   const [phoneNumber, setPhoneNumber] = useState(isEditing ? isBeingEdited?.phoneNumber ?? "" : "");
   const [profilePic, setProfilePic] = useState(isEditing ? isBeingEdited?.profilePic ?? "0default.jpg" : "0default.jpg");
-  console.log("profilePic of UserForm at start", profilePic);
-  console.log("user of UserForm at start", user);
-  console.log(user.occupation)
-  console.log(user.profilePic)
 
   useEffect(() => {
     if (isBeingEdited) {
@@ -49,6 +52,7 @@ const UserForm = () => {
     }
   }, [isBeingEdited]);
 
+  // upload profile picture
   const uploadPFP = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -61,12 +65,8 @@ const UserForm = () => {
           });
           if (response.ok) {
               const data = await response.json();
-              console.log("data of ProfilePic", data);
-              console.log("path", data.path);
-              console.log("data.path", data.path);
               const pfp = data.path;
-              setProfilePic(pfp); // Assuming the backend returns the path in the response
-              console.log("profilePic of ProfilePic", profilePic);
+              setProfilePic(pfp); 
           } else {
               console.error("Failed to upload image");
           }
@@ -104,8 +104,6 @@ const UserForm = () => {
           setUser(newUser);
           setUserList((prevUsers) => [...prevUsers, newUser]); 
           resetFormFields();
-          console.log("New user created:", newUser);
-          console.log("New user id:", newUser._id);
         } else {
           console.error("Failed to create user");
         }
@@ -132,7 +130,6 @@ const UserForm = () => {
               user._id === _id ? updatedUser : user
             )
           );
-          // Clear the editing state
           setIsBeingEdited(null);
           isEditing = false;
         } else {
@@ -154,13 +151,13 @@ const UserForm = () => {
     toggleFormVisibility();
   };
 
-  // date mask
+  // date mask to check valid date format
   const handleDateChange = (e: { target: { value: string; }; }) => {
     const parsed = parseISO(e.target.value); 
     if (!isValid(parsed)) {
       console.error('Invalid date format');
     } else{
-    let inputValue = e.target.value.replace(/\D/g, ""); // Strip non-numeric characters
+    let inputValue = e.target.value.replace(/\D/g, ""); 
     if (inputValue.length <= 4) {
       setBirthday(inputValue);
     } else {

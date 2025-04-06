@@ -4,6 +4,13 @@ import { FormVisibilityContext } from "../contexts/FormVisibilityContextProvider
 import useDebounce from "../hooks/useDebounce";
 import { UserListContext } from "../contexts/UserListContextProvider";
 
+/**
+ * ToolBar is the component that acts on the Display component,
+ * such as adding a new user and searching for a user.
+ * It appears in the Layout component.
+ * @returns A ToolBar component.
+ */
+
 const AddUserButton = () => {
     const { toggleFormVisibility } = useContext(FormVisibilityContext);
 

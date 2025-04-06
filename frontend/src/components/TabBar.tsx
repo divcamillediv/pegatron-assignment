@@ -4,6 +4,13 @@ import { useContext } from "react";
 import { DisplayContext } from "../contexts/DisplayContextProvider";
 import { DisplayMode } from "../types/types";
 
+/**
+ * TabBar is the component to switch the Display's mode,
+ * such as grid and list.
+ * It appears in the Layout component.
+ * @returns A TabBar component.
+ */
+
 interface Tab {
   icon: React.ReactNode;
   mode: DisplayMode;
@@ -24,7 +31,7 @@ const TabBar = () => {
         return (
           <div 
             key={index} 
-            className={`grow p-2 rounded-lg flex items-center justify-center ${isActive ? "bg-blue-400 text-white" : "bg-white border border-blue-400 text-blue-400"}`}
+            className={`grow p-2 rounded-lg flex items-center justify-center ${isActive ? "bg-blue-500 text-white" : "bg-white border border-blue-500 text-blue-500"}`}
             onClick={() => setDisplay(tab.mode)}
           >
             {tab.icon}

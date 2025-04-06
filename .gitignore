@@ -51,3 +51,4 @@ Thumbs.db
 dump/
 data/
 /frontend/src/archive
+/frontend/src/store
