@@ -20,10 +20,16 @@ app.use(function(req, res, next) {
   next();
 });
 
-
 app.get("/", (req: Request, res: Response) => {
   res.send("API is running");
 });
+
+/**
+ * Profile Picture management
+ * 
+ * This is the code to manage the profile pictures of the users.
+ * It is used to upload the profile pictures to the local server.
+ */
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -50,18 +56,14 @@ app.get('/upload/undefined', (req: Request, res: Response) => {
 //passing multer as middleware
 app.post('/upload/',upload.single('profilePic'), function(req, res) {
   if (req.file) {
-    const fileName = req.file.filename; // Get the file name
-    res.json({ path: fileName }); // Return the file name in the response
+    const fileName = req.file.filename; 
+    res.json({ path: fileName }); 
   } else {
     res.status(400).json({ message: 'File upload failed' });
   }
  });
 
-/* app.get('/upload/:profilePic', (req: Request, res: Response) => {
-  const profilePic = req.params.profilePic;
-  const filePath = path.join(__dirname, '../profilePics', profilePic);
-  res.sendFile(filePath);
-}); */
-
 app.use('/upload', express.static(path.join(__dirname, '../profilePics')));
 
+// it is more optimal to separate by routes and controllers,
+// if the project is more complex.
