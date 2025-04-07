@@ -3,7 +3,7 @@ import { DisplayContext } from '../contexts/DisplayContextProvider';
 import { useContext } from "react";
 import UserBox, { UserBoxTitle } from "./UserBox";
 import UserForm from './UserForm';
-import { UserState2 } from '../contexts/UserContextProvider';
+import { UserState } from '../contexts/UserContextProvider';
 import { UserListContext } from '../contexts/UserListContextProvider';
 
 /**
@@ -20,7 +20,7 @@ const Display = () => {
   const { display } = useContext(DisplayContext);
   const { userList } = useContext(UserListContext);
 
-  const iconBoxes = userList.map((user: UserState2) => (
+  const iconBoxes = userList.map((user: UserState) => (
     <UserBox 
       key={user._id}
       name={user.name}

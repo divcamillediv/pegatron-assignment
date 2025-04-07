@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import { Gender, Occupation } from "../types/types";
 
-export interface UserState2 {
+export interface UserState {
     _id: string;
     name: string;
     gender: Gender;
@@ -12,16 +12,16 @@ export interface UserState2 {
   }
 
 interface UserHandler {
-    user: UserState2;
-    setUser: React.Dispatch<React.SetStateAction<UserState2>>;
-    isBeingEdited: UserState2 | null;
-    setIsBeingEdited: React.Dispatch<React.SetStateAction<UserState2 | null>>;
+    user: UserState;
+    setUser: React.Dispatch<React.SetStateAction<UserState>>;
+    isBeingEdited: UserState | null;
+    setIsBeingEdited: React.Dispatch<React.SetStateAction<UserState | null>>;
 }
 
 export const UserContext = createContext<UserHandler>(undefined as any);
 
 export const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<UserState2>({
+    const [user, setUser] = useState<UserState>({
         _id: "",
         name: "",
         gender: "Male",
@@ -31,7 +31,7 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
         profilePic: "0default.jpg",
     });
 
-    const [isBeingEdited, setIsBeingEdited] = useState<UserState2 | null>(null);
+    const [isBeingEdited, setIsBeingEdited] = useState<UserState | null>(null);
 
     return (
         <UserContext.Provider value={{ user, setUser, isBeingEdited, setIsBeingEdited }}>

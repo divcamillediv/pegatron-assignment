@@ -1,17 +1,17 @@
 import { createContext, useEffect, useState } from "react";
-import { UserState2 } from "../contexts/UserContextProvider";
+import { UserState } from "../contexts/UserContextProvider";
 
 interface UserListHandler {
-    userList: UserState2[];
-    setUserList: React.Dispatch<React.SetStateAction<UserState2[]>>;
+    userList: UserState[];
+    setUserList: React.Dispatch<React.SetStateAction<UserState[]>>;
 }
 
-const emptyUserList: UserState2[] = [];
+const emptyUserList: UserState[] = [];
 
 export const UserListContext = createContext<UserListHandler>(undefined as any);
 
 const UserListContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const [userList, setUserList] = useState<UserState2[]>(emptyUserList);
+    const [userList, setUserList] = useState<UserState[]>(emptyUserList);
 
     useEffect(() => {
         const fetchUsers = async () => {
