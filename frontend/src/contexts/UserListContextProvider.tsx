@@ -19,7 +19,7 @@ const UserListContextProvider = ({ children }: { children: React.ReactNode }) =>
             const response = await fetch("http://localhost:3000/users");
             if (response.ok) {
               const data = await response.json();
-              setUserList(data); // Set users from backend
+              setUserList(data); 
             } else {
               console.error("Failed to fetch users");
             }
