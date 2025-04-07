@@ -79,7 +79,7 @@ router.get('/users/:id', async (req: Request, res: Response) => {
   }
 });
 
-// Update a user
+// Edit a user
 router.put('/users/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
