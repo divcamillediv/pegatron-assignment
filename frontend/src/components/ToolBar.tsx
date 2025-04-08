@@ -20,7 +20,7 @@ const AddUserButton = () => {
 
     return (
         <button 
-          className="bg-blue-400 text-white p-2 rounded-md w-1/8 h-10 flex items-center justify-center" 
+          className="bg-blue-400 cursor-pointer text-white p-2 rounded-md w-1/8 h-10 flex items-center justify-center" 
           onClick={handleButtonClick}
         >
           <FaUserPlus className="w-6 h-6" />
@@ -42,7 +42,7 @@ const SearchBar = () => {
   }
 
   return (
-    <div className="flex justify-center items-center w-full">
+    <div className="cursor-text flex justify-center items-center w-full">
       <input
         type="text"
         placeholder="Search..."

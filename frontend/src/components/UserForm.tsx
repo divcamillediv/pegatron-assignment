@@ -224,7 +224,7 @@ const UserForm = () => {
               </div>
             ))}
 
-            <button type="submit" className="bg-blue-200 mt-4 text-slate-900 rounded-md w-full p-2">
+            <button type="submit" className="bg-blue-200 cursor-pointer mt-4 text-slate-900 rounded-md w-full p-2">
               {isEditing ? "Save Changes" : "Add User"}
             </button>
           </div>

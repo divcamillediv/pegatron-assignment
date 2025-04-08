@@ -12,20 +12,25 @@ import { PaginationContext} from "../contexts/PaginationContextProvider";
 const Pagination = () => {
   const { currentPage, setCurrentPage, totalPages } = useContext(PaginationContext);
 
+  const clickOnNextPage = () => { setCurrentPage(Math.min(totalPages - 1, currentPage + 1)) }
+  const clickOnPreviousPage = () => { setCurrentPage(Math.max(0, currentPage - 1)) }
+
+  const buttonClass = "text-gray-600 cursor-pointer disabled:text-gray-300";
+
   return (
     <div className="flex justify-center gap-4 items-center">
       <button 
-        onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
+        onClick={clickOnPreviousPage}
         disabled={currentPage === 0}
-        className="text-gray-600 disabled:text-gray-300"
+        className={buttonClass}
       >
         <FaArrowLeft />
       </button>
-      <div>Page {currentPage + 1}/{totalPages}</div>
+      <div>Page {currentPage + 1} of {totalPages}</div>
       <button
-        onClick={() => setCurrentPage(Math.min(totalPages - 1, currentPage + 1))}
+        onClick={clickOnNextPage}
         disabled={currentPage === totalPages - 1}
-        className="text-gray-600 disabled:text-gray-300"
+        className={buttonClass}
       >
         <FaArrowRight />
       </button>

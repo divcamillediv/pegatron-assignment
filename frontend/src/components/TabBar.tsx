@@ -31,7 +31,7 @@ const TabBar = () => {
         return (
           <div 
             key={index} 
-            className={`grow p-2 rounded-lg flex items-center justify-center ${isActive ? "bg-blue-500 text-white" : "bg-white border border-blue-500 text-blue-500"}`}
+            className={`cursor-pointer grow p-2 rounded-lg flex items-center justify-center ${isActive ? "bg-blue-500 text-white" : "bg-white border border-blue-500 text-blue-500"}`}
             onClick={() => setDisplay(tab.mode)}
           >
             {tab.icon}
