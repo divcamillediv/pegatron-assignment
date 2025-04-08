@@ -209,7 +209,7 @@ const UserForm = () => {
               <div key={id}>
                 <label className="text-slate-100 font-bold" htmlFor={id}>{label}:</label>
                 {type === "select" ? (
-                  <select value={value} onChange={onChange} id={id} className="bg-slate-100 text-slate-900 p-2 rounded-md w-full">
+                  <select value={value} onChange={onChange} id={id} className="bg-slate-100 cursor-pointer text-slate-900 p-2 rounded-md w-full">
                     {options?.map(option => <option key={option} value={option}>{option.charAt(0).toUpperCase() + option.slice(1)}</option>)}
                   </select>
                 ) : (
